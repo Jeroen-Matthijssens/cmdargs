@@ -76,12 +76,11 @@ public class SubCommandParserTest {
 		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
 
 		parser = new CmdSchemeParser (cmdscheme);
-		parser.parse (args);
 	}
 
 	@Test
 	public void it_should_know_its_command () {
-		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand parsed = parser.parse (args);
 		Command cmd = parsed.getCommand ();
 		assertThat (cmd.getRepresentation (), is (command));
 	}

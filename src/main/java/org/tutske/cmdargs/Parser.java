@@ -3,7 +3,6 @@ package org.tutske.cmdargs;
 
 public interface Parser {
 
-	public void parse (String [] args);
-	public ParsedCommand getOptions ();
+	public ParsedCommand parse (String [] args);
 
 }

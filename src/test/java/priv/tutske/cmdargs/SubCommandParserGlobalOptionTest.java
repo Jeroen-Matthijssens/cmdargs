@@ -79,13 +79,12 @@ public class SubCommandParserGlobalOptionTest {
 		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
 
 		parser = new CmdSchemeParser (cmdscheme);
-		parser.parse (args);
 	}
 
 	@Test
 	public void it_should () {
-		ParsedCommand globalOptions = parser.getOptions();
-		assertThat (globalOptions.isPresent (option), is (present));
+		ParsedCommand options = parser.parse (args);
+		assertThat (options.isPresent (option), is (present));
 	}
 
 }

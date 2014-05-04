@@ -83,13 +83,11 @@ public class SimpleParserPresenceTest {
 
 		CommandScheme scheme = schemeBuilder.buildScheme ();
 		parser = new CmdSchemeParser (scheme);
-
-		parser.parse (args);
 	}
 
 	@Test
 	public void it_should_have_the_option () {
-		ParsedCommand options = parser.getOptions ();
+		ParsedCommand options = parser.parse (args);
 		assertThat (options.isPresent (option), is (present));
 	}
 

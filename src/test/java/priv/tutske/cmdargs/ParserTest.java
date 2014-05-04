@@ -52,9 +52,8 @@ public class ParserTest {
 	public void it_should_find_sub_command_create ()
 	throws CommandLineException {
 		String [] args = {"--layout=simple", "-w", "create"};
-		parser.parse (args);
 
-		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand parsed = parser.parse (args);
 		assertThat (parsed.hasCommand (), is (true));
 		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
@@ -63,9 +62,8 @@ public class ParserTest {
 	public void it_should_find_sub_command_with_options ()
 	throws CommandLineException {
 		String [] args = {"--layout=simple", "-w", "create", "--enabled", "-p"};
-		parser.parse (args);
 
-		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand parsed = parser.parse (args);
 		assertThat (parsed.hasCommand (), is (true));
 		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
@@ -74,9 +72,8 @@ public class ParserTest {
 	public void it_should_find_sub_command_with_arguments ()
 	throws CommandLineException {
 		String [] args = {"--layout=simple", "-w", "create", "appname"};
-		parser.parse (args);
 
-		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand parsed = parser.parse (args);
 		assertThat (parsed.hasCommand (), is (true));
 		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
@@ -85,9 +82,8 @@ public class ParserTest {
 	public void it_should_find_sub_command_with_options_and_arguments ()
 	throws CommandLineException {
 		String [] args = {"--layout=simple", "-w", "create", "appname"};
-		parser.parse (args);
 
-		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand parsed = parser.parse (args);
 		assertThat (parsed.hasCommand (), is (true));
 		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
@@ -98,7 +94,7 @@ public class ParserTest {
 		String [] args = {"--layout=simple", "-w", "list"};
 		parser.parse (args);
 
-		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand parsed = parser.parse (args);
 		assertThat (parsed.hasCommand (), is (true));
 		assertThat (parsed.getCommand ().getRepresentation (), is ("list"));
 	}
@@ -107,8 +103,7 @@ public class ParserTest {
 	public void it_should_find_sub_command_options ()
 	throws CommandLineException {
 		String [] args = {"create", "-h", "--path=path/to/file"};
-		parser.parse (args);
-		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand parsed = parser.parse (args);
 		ParsedCommand subparsed = parsed.getParsed ();
 
 		assertThat (subparsed.isPresent ("path"), is (true));
