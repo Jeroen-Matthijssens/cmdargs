@@ -1,0 +1,21 @@
+body {
+	width: 75%;
+	margin: auto;
+	background-color: #fbfbfb;
+	font-family: Helvetica, Arial, Freesans, Clean, Sans-serif;
+	margin-bottom: 35%;
+}
+
+code {
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 3px;
+	background-color: #f0f0f0;
+}
+
+pre code {
+	margin: 0 15px 0 15px;
+}
+
+p {
+	text-align: justify;
+}
