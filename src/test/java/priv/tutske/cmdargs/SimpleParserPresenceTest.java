@@ -21,7 +21,7 @@ public class SimpleParserPresenceTest {
 	private String [] args;
 	private String option;
 	private boolean present;
-	private ParserImpl parser;
+	private Parser parser;
 
 	public SimpleParserPresenceTest (String cmd, String option, boolean present) {
 		this.args = cmd.split (" ");
@@ -82,14 +82,14 @@ public class SimpleParserPresenceTest {
 		schemeBuilder.add (new BasicOption ("help", "h"));
 
 		CommandScheme scheme = schemeBuilder.buildScheme ();
-		parser = new ParserImpl (scheme);
+		parser = new CmdSchemeParser (scheme);
 
 		parser.parse (args);
 	}
 
 	@Test
 	public void it_should_have_the_option () {
-		ParsedOptions options = parser.getOptions ();
+		ParsedCommand options = parser.getOptions ();
 		assertThat (options.isPresent (option), is (present));
 	}
 

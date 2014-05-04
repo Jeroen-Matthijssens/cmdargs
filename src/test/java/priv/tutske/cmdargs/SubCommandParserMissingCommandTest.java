@@ -19,7 +19,7 @@ import org.tutske.cmdargs.exceptions.*;
 public class SubCommandParserMissingCommandTest {
 
 	private String [] args;
-	private ParserImpl parser;
+	private Parser parser;
 
 	public SubCommandParserMissingCommandTest (String cmd) {
 		this.args = cmd.split (" ");
@@ -42,19 +42,12 @@ public class SubCommandParserMissingCommandTest {
 	public void setup () {
 		CommandSchemeBuilder schemeBuilder = new CommandSchemeBuilder ();
 
-		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new StringValueOption ("path", "p"));
-		schemeBuilder.add (new BasicOption ("help", "h"));
-		CommandScheme globalOptions = schemeBuilder.buildScheme ();
-
-		schemeBuilder.reset ();
-
 		schemeBuilder.add (new StringValueOption ("template", "p"));
 		schemeBuilder.add (new StringValueOption ("layout", "l"));
 		schemeBuilder.add (new BasicOption ("interactive", "i"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme createScheme = schemeBuilder.buildScheme ();
-		Command create = new SubCommandImpl ("create", createScheme);
+		Command create = new CommandImpl ("create", createScheme);
 
 		schemeBuilder.reset ();
 
@@ -64,9 +57,18 @@ public class SubCommandParserMissingCommandTest {
 		schemeBuilder.add (new BasicOption ("human readable", "H"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme listScheme = schemeBuilder.buildScheme ();
-		Command list = new SubCommandImpl ("list", listScheme);
+		Command list = new CommandImpl ("list", listScheme);
 
-		parser = new ParserImpl (globalOptions, Arrays.asList (create, list));
+		schemeBuilder.reset ();
+
+		schemeBuilder.add (new BooleanOption ("enabled"));
+		schemeBuilder.add (new StringValueOption ("path", "p"));
+		schemeBuilder.add (new BasicOption ("help", "h"));
+		schemeBuilder.add (create);
+		schemeBuilder.add (list);
+		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
+
+		parser = new CmdSchemeParser (cmdscheme);
 	}
 
 	@Test (expected = MissingSubCommandException.class)

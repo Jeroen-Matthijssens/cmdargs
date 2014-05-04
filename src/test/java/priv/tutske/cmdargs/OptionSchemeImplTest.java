@@ -41,7 +41,7 @@ public class OptionSchemeImplTest {
 		options.add (enabled);
 		options.add (value);
 
-		scheme = new CommandSchemeImpl (options);
+		scheme = CommandSchemeImpl.newInstance (options);
 	}
 
 	@Test

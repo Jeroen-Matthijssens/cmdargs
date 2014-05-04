@@ -41,7 +41,11 @@ public class CommandSchemeBuilder {
 	}
 
 	public CommandScheme buildScheme () {
-		return new CommandSchemeImpl (options, arguments);
+		if ( arguments.size () == 0 ) {
+			return CommandSchemeImpl.withCommands (options, commands);
+		} else {
+			return CommandSchemeImpl.withArguments (options, arguments);
+		}
 	}
 
 }

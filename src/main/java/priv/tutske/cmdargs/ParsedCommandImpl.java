@@ -8,21 +8,26 @@ import java.util.HashMap;
 import org.tutske.cmdargs.*;
 
 
-public class ParsedOptionsImpl implements ParsedOptions {
+public class ParsedCommandImpl implements ParsedCommand {
 
 	private Command command;
+	private ParsedCommand parsed;
 	private List<Option> options;
 	private Map<Option, Object> values;
 
 	/* constructors */
 
-	public ParsedOptionsImpl (Command command) {
-		this.command = command;
+	public ParsedCommandImpl () {
 		options = new ArrayList<Option> ();
 		values = new HashMap<Option, Object> ();
 	}
 
 	/* implementing `ParsedOptions` */
+
+	@Override
+	public boolean hasCommand () {
+		return command != null;
+	}
 
 	@Override
 	public boolean isPresent (String representation) {
@@ -38,6 +43,11 @@ public class ParsedOptionsImpl implements ParsedOptions {
 	@Override
 	public Command getCommand () {
 		return command;
+	}
+
+	@Override
+	public ParsedCommand getParsed () {
+		return parsed;
 	}
 
 	@Override
@@ -61,6 +71,14 @@ public class ParsedOptionsImpl implements ParsedOptions {
 
 	public void add (Option option) {
 		options.add (option);
+	}
+
+	public void setCommand (Command command) {
+		this.command = command;
+	}
+
+	public void setParsed (ParsedCommand parsed) {
+		this.parsed = parsed;
 	}
 
 	private Option findOption (String representation) {

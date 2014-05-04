@@ -20,7 +20,7 @@ public class SubCommandParserTest {
 
 	private String [] args;
 	private String command;
-	private ParserImpl parser;
+	private Parser parser;
 
 	public SubCommandParserTest (String cmd, String command) {
 		this.args = cmd.split (" ");
@@ -49,19 +49,12 @@ public class SubCommandParserTest {
 	public void setup () throws CommandLineException {
 		CommandSchemeBuilder schemeBuilder = new CommandSchemeBuilder ();
 
-		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new StringValueOption ("path", "p"));
-		schemeBuilder.add (new BasicOption ("help", "h"));
-		CommandScheme globalOptions = schemeBuilder.buildScheme ();
-
-		schemeBuilder.reset ();
-
 		schemeBuilder.add (new StringValueOption ("template", "p"));
 		schemeBuilder.add (new StringValueOption ("layout", "l"));
 		schemeBuilder.add (new BasicOption ("interactive", "i"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme createScheme = schemeBuilder.buildScheme ();
-		Command create = new SubCommandImpl ("create", createScheme);
+		Command create = new CommandImpl ("create", createScheme);
 
 		schemeBuilder.reset ();
 
@@ -71,15 +64,26 @@ public class SubCommandParserTest {
 		schemeBuilder.add (new BasicOption ("human readable", "H"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme listScheme = schemeBuilder.buildScheme ();
-		Command list = new SubCommandImpl ("list", listScheme);
+		Command list = new CommandImpl ("list", listScheme);
 
-		parser = new ParserImpl (globalOptions, Arrays.asList (create, list));
+		schemeBuilder.reset ();
+
+		schemeBuilder.add (new BooleanOption ("enabled"));
+		schemeBuilder.add (new StringValueOption ("path", "p"));
+		schemeBuilder.add (new BasicOption ("help", "h"));
+		schemeBuilder.add (create);
+		schemeBuilder.add (list);
+		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
+
+		parser = new CmdSchemeParser (cmdscheme);
 		parser.parse (args);
 	}
 
 	@Test
 	public void it_should_know_its_command () {
-		assertThat (parser.getSubCommand (), is (command));
+		ParsedCommand parsed = parser.getOptions ();
+		Command cmd = parsed.getCommand ();
+		assertThat (cmd.getRepresentation (), is (command));
 	}
 
 }

@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.Before;
 import org.tutske.cmdargs.Command;
 
-import priv.tutske.cmdargs.SubCommandImpl;
+import priv.tutske.cmdargs.CommandImpl;
 
 public class SubCommandImplTest {
 
@@ -16,7 +16,7 @@ public class SubCommandImplTest {
 
 	@Before
 	public void setup () {
-		cmd = new SubCommandImpl ("sub");
+		cmd = new CommandImpl ("sub");
 	}
 
 	@Test
@@ -36,25 +36,25 @@ public class SubCommandImplTest {
 
 	@Test
 	public void it_should_lower_case_representations () {
-		Command cmd = new SubCommandImpl ("SuB");
+		Command cmd = new CommandImpl ("SuB");
 		assertThat (cmd.getRepresentation (), is ("sub"));
 	}
 
 	@Test (expected = IllegalArgumentException.class)
 	public void it_should_complain_when_command_is_null () {
-		new SubCommandImpl (null);
+		new CommandImpl (null);
 		fail ("SubCommand should not allow the command string to be null");
 	}
 
 	@Test (expected = IllegalArgumentException.class)
 	public void it_should_complain_when_command_is_empty_string () {
-		new SubCommandImpl ("");
+		new CommandImpl ("");
 		fail ("SubCommand should not allow the command string to be empty");
 	}
 
 	@Test (expected = IllegalArgumentException.class)
 	public void it_should_complain_when_command_contains_spaces () {
-		new SubCommandImpl ("sub command");
+		new CommandImpl ("sub command");
 		fail ("Subcommands can not contain spaces");
 	}
 

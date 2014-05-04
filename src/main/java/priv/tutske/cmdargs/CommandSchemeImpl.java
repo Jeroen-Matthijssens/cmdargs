@@ -12,31 +12,48 @@ public class CommandSchemeImpl implements CommandScheme {
 	private List<Command> commands;
 	private List<Argument<?>> arguments;
 
+	/* -- static constructors -- */
+
+	public static CommandScheme newInstance () {
+		return new CommandSchemeImpl ();
+	}
+
+	public static CommandScheme newInstance (List<Option> options) {
+		return new CommandSchemeImpl ().setOptions (options);
+	}
+
+	public static CommandScheme withCommands (List<Command> commands) {
+		return new CommandSchemeImpl ().setCommands (commands);
+	}
+
+	public static CommandScheme withCommands (List<Option> options, List<Command> commands) {
+		return new CommandSchemeImpl ().setOptions (options).setCommands (commands);
+	}
+
+	public static CommandScheme withArguments (List<Argument<?>> arguments) {
+		return new CommandSchemeImpl ().setArguments (arguments);
+	}
+
+	public static CommandScheme withArguments (List<Option> options, List<Argument<?>> arguments) {
+		return new CommandSchemeImpl ().setOptions (options).setArguments (arguments);
+	}
+
 	/* Constructors */
 
 	public CommandSchemeImpl () {
 		options = new ArrayList<Option> ();
 	}
 
-	public CommandSchemeImpl (List<Option> options) {
-		this (options, null);
-	}
-
-	public CommandSchemeImpl (List<Option> options, List<Argument<?>> arguments) {
-		this.options = options;
-		this.arguments = arguments;
-	}
-
 	/* implementing OptoinScheme interface */
 
 	@Override
 	public boolean hasArguments () {
-		return arguments != null;
+		return arguments != null && arguments.size () != 0;
 	}
 
 	@Override
 	public boolean hasCommands () {
-		return commands != null;
+		return commands != null && commands.size () != 0;
 	}
 
 	@Override
@@ -93,6 +110,23 @@ public class CommandSchemeImpl implements CommandScheme {
 	@Override
 	public Argument<?> getArgument (int position) {
 		return arguments.get (position);
+	}
+
+	/* -- privates -- */
+
+	private CommandSchemeImpl setOptions (List<Option> options) {
+		this.options = options;
+		return this;
+	}
+
+	private CommandSchemeImpl setArguments (List<Argument<?>> arguments) {
+		this.arguments = arguments;
+		return this;
+	}
+
+	private CommandSchemeImpl setCommands (List<Command> commands) {
+		this.commands = commands;
+		return this;
 	}
 
 }

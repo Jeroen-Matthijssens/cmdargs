@@ -23,7 +23,7 @@ public class SimpleParserValueTest {
 	private String [] args;
 	private String option;
 	private Object value;
-	private ParserImpl parser;
+	private Parser parser;
 
 	public SimpleParserValueTest (String cmd, String option, Object value) {
 		this.args = cmd.split (" ");
@@ -69,14 +69,14 @@ public class SimpleParserValueTest {
 		schemeBuilder.add (new BasicOption ("help", "h"));
 
 		CommandScheme scheme = schemeBuilder.buildScheme ();
-		parser = new ParserImpl (scheme);
+		parser = new CmdSchemeParser (scheme);
 
 		parser.parse (args);
 	}
 
 	@Test
 	public void it_should_have_the_option () {
-		ParsedOptions options = parser.getOptions ();
+		ParsedCommand options = parser.getOptions ();
 		assertThat (options.getValue (option), is ((Object) value));
 	}
 

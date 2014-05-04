@@ -22,7 +22,7 @@ public class SubCommandParserGlobalOptionTest {
 	private String [] args;
 	private String option;
 	private boolean present;
-	private ParserImpl parser;
+	private Parser parser;
 
 	public SubCommandParserGlobalOptionTest (String args, String option, boolean present) {
 		this.args = args.split (" ");
@@ -52,19 +52,12 @@ public class SubCommandParserGlobalOptionTest {
 	public void setup () throws CommandLineException {
 		CommandSchemeBuilder schemeBuilder = new CommandSchemeBuilder ();
 
-		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new StringValueOption ("path", "p"));
-		schemeBuilder.add (new BasicOption ("help", "h"));
-		CommandScheme globalOptions = schemeBuilder.buildScheme ();
-
-		schemeBuilder.reset ();
-
 		schemeBuilder.add (new StringValueOption ("template", "p"));
 		schemeBuilder.add (new StringValueOption ("layout", "l"));
 		schemeBuilder.add (new BasicOption ("interactive", "i"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme createScheme = schemeBuilder.buildScheme ();
-		Command create = new SubCommandImpl ("create", createScheme);
+		Command create = new CommandImpl ("create", createScheme);
 
 		schemeBuilder.reset ();
 
@@ -74,15 +67,24 @@ public class SubCommandParserGlobalOptionTest {
 		schemeBuilder.add (new BasicOption ("human readable", "H"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme listScheme = schemeBuilder.buildScheme ();
-		Command list = new SubCommandImpl ("list", listScheme);
+		Command list = new CommandImpl ("list", listScheme);
 
-		parser = new ParserImpl (globalOptions, Arrays.asList (create, list));
+		schemeBuilder.reset ();
+
+		schemeBuilder.add (new BooleanOption ("enabled"));
+		schemeBuilder.add (new StringValueOption ("path", "p"));
+		schemeBuilder.add (new BasicOption ("help", "h"));
+		schemeBuilder.add (create);
+		schemeBuilder.add (list);
+		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
+
+		parser = new CmdSchemeParser (cmdscheme);
 		parser.parse (args);
 	}
 
 	@Test
 	public void it_should () {
-		ParsedOptions globalOptions = parser.getGlobalOptions ();
+		ParsedCommand globalOptions = parser.getOptions();
 		assertThat (globalOptions.isPresent (option), is (present));
 	}
 

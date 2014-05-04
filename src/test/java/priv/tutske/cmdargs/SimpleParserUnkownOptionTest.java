@@ -19,7 +19,7 @@ import org.tutske.cmdargs.exceptions.*;
 public class SimpleParserUnkownOptionTest {
 
 	private String [] args;
-	private ParserImpl parser;
+	private Parser parser;
 
 	public SimpleParserUnkownOptionTest (String cmd) {
 		this.args = cmd.split (" ");
@@ -55,7 +55,7 @@ public class SimpleParserUnkownOptionTest {
 		schemeBuilder.add (new BasicOption ("help", "h"));
 
 		CommandScheme scheme = schemeBuilder.buildScheme ();
-		parser = new ParserImpl (scheme);
+		parser = new CmdSchemeParser (scheme);
 	}
 
 	@Test (expected = UnknownOptionException.class)

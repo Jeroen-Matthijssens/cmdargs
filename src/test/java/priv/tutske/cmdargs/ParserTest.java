@@ -14,26 +14,18 @@ import org.tutske.cmdargs.exceptions.*;
 
 public class ParserTest {
 
-	CommandSchemeBuilder schemeBuilder;
-	ParserImpl parser;
+	private CommandSchemeBuilder schemeBuilder;
+	private Parser parser;
 
 	@Before
 	public void setup () {
 		schemeBuilder = new CommandSchemeBuilder ();
 
-		schemeBuilder.add (new BasicOption ("working directory", "w"));
-		schemeBuilder.add (new StringValueOption ("layout", "l"));
-		schemeBuilder.add (new StringValueOption ("root", "r"));
-		schemeBuilder.add (new BasicOption ("help", "h"));
-		CommandScheme globalOptions = schemeBuilder.buildScheme ();
-
-		schemeBuilder.reset ();
-
 		schemeBuilder.add (new BooleanOption ("enabled"));
 		schemeBuilder.add (new StringValueOption ("path", "p"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme createScheme = schemeBuilder.buildScheme ();
-		Command create = new SubCommandImpl ("create", createScheme);
+		Command create = new CommandImpl ("create", createScheme);
 
 		schemeBuilder.reset ();
 
@@ -41,9 +33,19 @@ public class ParserTest {
 		schemeBuilder.add (new BasicOption ("human readable", "H"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme listScheme = schemeBuilder.buildScheme ();
-		Command list = new SubCommandImpl ("list", listScheme);
+		Command list = new CommandImpl ("list", listScheme);
 
-		parser = new ParserImpl (globalOptions, Arrays.asList (create, list));
+		schemeBuilder.reset ();
+
+		schemeBuilder.add (new BasicOption ("working directory", "w"));
+		schemeBuilder.add (new StringValueOption ("layout", "l"));
+		schemeBuilder.add (new StringValueOption ("root", "r"));
+		schemeBuilder.add (new BasicOption ("help", "h"));
+		schemeBuilder.add (create);
+		schemeBuilder.add (list);
+		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
+
+		parser = new CmdSchemeParser (cmdscheme);
 	}
 
 	@Test
@@ -52,8 +54,9 @@ public class ParserTest {
 		String [] args = {"--layout=simple", "-w", "create"};
 		parser.parse (args);
 
-		assertThat (parser.hasSubCommand (), is (true));
-		assertThat (parser.getSubCommand (), is ("create"));
+		ParsedCommand parsed = parser.getOptions ();
+		assertThat (parsed.hasCommand (), is (true));
+		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
 
 	@Test
@@ -62,8 +65,9 @@ public class ParserTest {
 		String [] args = {"--layout=simple", "-w", "create", "--enabled", "-p"};
 		parser.parse (args);
 
-		assertThat (parser.hasSubCommand (), is (true));
-		assertThat (parser.getSubCommand (), is ("create"));
+		ParsedCommand parsed = parser.getOptions ();
+		assertThat (parsed.hasCommand (), is (true));
+		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
 
 	@Test
@@ -72,8 +76,9 @@ public class ParserTest {
 		String [] args = {"--layout=simple", "-w", "create", "appname"};
 		parser.parse (args);
 
-		assertThat (parser.hasSubCommand (), is (true));
-		assertThat (parser.getSubCommand (), is ("create"));
+		ParsedCommand parsed = parser.getOptions ();
+		assertThat (parsed.hasCommand (), is (true));
+		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
 
 	@Test
@@ -82,8 +87,9 @@ public class ParserTest {
 		String [] args = {"--layout=simple", "-w", "create", "appname"};
 		parser.parse (args);
 
-		assertThat (parser.hasSubCommand (), is (true));
-		assertThat (parser.getSubCommand (), is ("create"));
+		ParsedCommand parsed = parser.getOptions ();
+		assertThat (parsed.hasCommand (), is (true));
+		assertThat (parsed.getCommand ().getRepresentation (), is ("create"));
 	}
 
 	@Test
@@ -92,8 +98,9 @@ public class ParserTest {
 		String [] args = {"--layout=simple", "-w", "list"};
 		parser.parse (args);
 
-		assertThat (parser.hasSubCommand (), is (true));
-		assertThat (parser.getSubCommand (), is ("list"));
+		ParsedCommand parsed = parser.getOptions ();
+		assertThat (parsed.hasCommand (), is (true));
+		assertThat (parsed.getCommand ().getRepresentation (), is ("list"));
 	}
 
 	@Test
@@ -101,10 +108,11 @@ public class ParserTest {
 	throws CommandLineException {
 		String [] args = {"create", "-h", "--path=path/to/file"};
 		parser.parse (args);
-		ParsedOptions options = parser.getOptions ();
+		ParsedCommand parsed = parser.getOptions ();
+		ParsedCommand subparsed = parsed.getParsed ();
 
-		assertThat (options.isPresent ("path"), is (true));
-		assertThat (options.isPresent ("help"), is (true));
+		assertThat (subparsed.isPresent ("path"), is (true));
+		assertThat (subparsed.isPresent ("help"), is (true));
 	}
 
 	@Test (expected = MissingSubCommandException.class)
