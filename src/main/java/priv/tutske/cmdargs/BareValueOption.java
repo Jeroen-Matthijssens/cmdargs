@@ -1,6 +1,5 @@
 package priv.tutske.cmdargs;
 
-import org.tutske.cmdargs.exceptions.WrongValueException;
 import org.tutske.cmdargs.Option;
 
 
@@ -25,11 +24,6 @@ public class BareValueOption extends BareOption {
 	}
 
 	/* implementing options interface */
-
-	public String validateValue (String representation, String value)
-	throws WrongValueException {
-		return value;
-	}
 
 	@Override
 	public boolean equals (Object other) {
