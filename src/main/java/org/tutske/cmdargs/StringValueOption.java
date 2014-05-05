@@ -28,7 +28,7 @@ public class StringValueOption extends BareValueOption implements ValueOption<St
 
 	@Override
 	public Validator<String> getValidator (String longRepr) {
-		return new NoopValidator ();
+		return NoopValidator.newInstance ();
 	}
 
 	@Override
