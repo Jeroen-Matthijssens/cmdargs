@@ -30,8 +30,8 @@ public class CommandSchemeBuilder {
 	public void add (Option option) {
 		// If multiple options with the same representation are added more than once there
 		// is a problem. Abuse the fact that equals is based on the long representation.
-		if (options.indexOf (option) != -1) { throw new IllegalArgumentException (); }
-		options.add (option);
+		if ( options.indexOf (option) < 0 ) { options.add (option); return; }
+		throw new IllegalArgumentException (option.toString ());
 	}
 	public void addCommand (Command command) {
 		add (command);

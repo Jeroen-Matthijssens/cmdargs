@@ -107,7 +107,7 @@ public class CmdSchemeParser implements Parser {
 		String repr = tokens.consume ();
 		if ( scheme.hasCommand (repr) ) { return scheme.getCommand(repr); }
 
-		String msg = "What was supposed to be the command is not a valid one.";
+		String msg = "What was supposed to be the command is not a valid one. `" + repr + "`";
 		throw new MissingSubCommandException (msg);
 	}
 

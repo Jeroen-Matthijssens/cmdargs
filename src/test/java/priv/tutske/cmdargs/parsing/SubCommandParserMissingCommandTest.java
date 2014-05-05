@@ -1,7 +1,6 @@
-package priv.tutske.cmdargs;
+package priv.tutske.cmdargs.parsing;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.Arrays;
@@ -11,42 +10,39 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
-
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
+import priv.tutske.cmdargs.CmdSchemeParser;
+import priv.tutske.cmdargs.CommandImpl;
+import priv.tutske.cmdargs.CommandSchemeBuilder;
+
+
 @RunWith (Parameterized.class)
-public class SubCommandParserTest {
+public class SubCommandParserMissingCommandTest {
 
 	private String [] args;
-	private String command;
 	private Parser parser;
 
-	public SubCommandParserTest (String cmd, String command) {
+	public SubCommandParserMissingCommandTest (String cmd) {
 		this.args = cmd.split (" ");
-		this.command = command;
 	}
 
-	@Parameters (name="`{0}` has command `{1}`")
+	@Parameters (name = "`{0}` is missing one of the sub commands 'list' or 'create'")
 	public static Collection<Object []> arguments () {
 		return Arrays.asList (new Object [] [] {
-			{"create", "create"}
-			, {"list", "list"}
-
-			, {"--enabled list", "list"}
-			, {"--enabled create", "create"}
-			, {"-p list create", "create"}
-			, {"-p create list", "list"}
-			
-			, {"-h create --interactive", "create"}
-
-			, {"--enabled list --recursive", "list"}
-			, {"--enabled create --layout=simple", "create"}
+			{""}
+			, {"--enabled"}
+			, {"-p create"}
+			, {"-p list"}
+			, {"--path=create update"}
+			, {"-p create --enabled"}
+			, {"-p path/to/file -- create other but not --enabled"}
 		});
 	}
 
 	@Before
-	public void setup () throws CommandLineException {
+	public void setup () {
 		CommandSchemeBuilder schemeBuilder = new CommandSchemeBuilder ();
 
 		schemeBuilder.add (new StringValueOption ("template", "p"));
@@ -78,11 +74,11 @@ public class SubCommandParserTest {
 		parser = new CmdSchemeParser (cmdscheme);
 	}
 
-	@Test
-	public void it_should_know_its_command () {
-		ParsedCommand parsed = parser.parse (args);
-		Command cmd = parsed.getCommand ();
-		assertThat (cmd.getRepresentation (), is (command));
+	@Test (expected = MissingSubCommandException.class)
+	public void it_should_complain_about_missing_subcommand ()
+	throws CommandLineException {
+		parser.parse (args);
+		fail ("When a subcommand is possible, a subcommand must always be used.");
 	}
 
 }

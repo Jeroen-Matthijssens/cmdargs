@@ -10,7 +10,7 @@ import org.tutske.cmdargs.Command;
 
 import priv.tutske.cmdargs.CommandImpl;
 
-public class SubCommandImplTest {
+public class CommandImplTest {
 
 	Command cmd;
 

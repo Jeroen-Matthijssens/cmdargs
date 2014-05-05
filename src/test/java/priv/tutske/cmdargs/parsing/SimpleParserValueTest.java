@@ -1,4 +1,4 @@
-package priv.tutske.cmdargs;
+package priv.tutske.cmdargs.parsing;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -11,10 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
-
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
+import priv.tutske.cmdargs.CmdSchemeParser;
 
 
 @RunWith (Parameterized.class)
@@ -54,21 +54,7 @@ public class SimpleParserValueTest {
 
 	@Before
 	public void setup () throws CommandLineException {
-		CommandSchemeBuilder schemeBuilder = new CommandSchemeBuilder ();
-
-		// Basic options.
-		schemeBuilder.add (new BasicOption ("verbose", "v"));
-		schemeBuilder.add (new BasicOption ("human readable", "H"));
-		// Value options
-		schemeBuilder.add (new StringValueOption ("path", "p"));
-		schemeBuilder.add (new StringValueOption ("layout", "l"));
-		// Boolean options
-		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new BooleanOption ("recursive"));
-		// Pretend this is real.
-		schemeBuilder.add (new BasicOption ("help", "h"));
-
-		CommandScheme scheme = schemeBuilder.buildScheme ();
+		CommandScheme scheme = new SchemeBuilderSimple ().build ();
 		parser = new CmdSchemeParser (scheme);
 	}
 

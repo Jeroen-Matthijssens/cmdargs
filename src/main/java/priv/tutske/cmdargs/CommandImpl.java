@@ -3,7 +3,7 @@ package priv.tutske.cmdargs;
 import org.tutske.cmdargs.CommandScheme;
 import org.tutske.cmdargs.Command;
 
-class CommandImpl implements Command {
+public class CommandImpl implements Command {
 
 	private String repr;
 	private CommandScheme scheme;
@@ -29,7 +29,7 @@ class CommandImpl implements Command {
 		this.scheme = scheme;
 	}
 
-	/* implemetning SubCommand */
+	/* implementing Command */
 
 	public boolean matches (String representation) {
 		String standard = toStandardRepresentation (representation);
@@ -42,6 +42,11 @@ class CommandImpl implements Command {
 
 	public CommandScheme getOptionScheme () {
 		return scheme;
+	}
+
+	@Override
+	public String toString () {
+		return String.format ("<CommandImpl: %s>", getRepresentation ());
 	}
 
 	/* private utility functios */

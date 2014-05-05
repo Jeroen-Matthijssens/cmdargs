@@ -75,7 +75,7 @@ public class CommandSchemeImpl implements CommandScheme {
 
 	@Override
 	public boolean hasCommand (Command command) {
-		return false;
+		return commands.indexOf (command) != -1;
 	}
 
 	@Override

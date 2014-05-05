@@ -1,4 +1,4 @@
-package priv.tutske.cmdargs;
+package priv.tutske.cmdargs.parsing;
 
 import static org.junit.Assert.fail;
 
@@ -10,9 +10,10 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
-
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
+
+import priv.tutske.cmdargs.CmdSchemeParser;
 
 
 @RunWith (Parameterized.class)
@@ -39,22 +40,8 @@ public class SimpleParserUnkownOptionTest {
 	}
 
 	@Before
-	public void setup () {
-		CommandSchemeBuilder schemeBuilder = new CommandSchemeBuilder ();
-
-		// Basic options.
-		schemeBuilder.add (new BasicOption ("verbose", "v"));
-		schemeBuilder.add (new BasicOption ("human readable", "H"));
-		// Value options
-		schemeBuilder.add (new StringValueOption ("path", "p"));
-		schemeBuilder.add (new StringValueOption ("layout", "l"));
-		// Boolean options
-		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new BooleanOption ("recursive"));
-		// Pretend this is real.
-		schemeBuilder.add (new BasicOption ("help", "h"));
-
-		CommandScheme scheme = schemeBuilder.buildScheme ();
+	public void setup () throws CommandLineException {
+		CommandScheme scheme = new SchemeBuilderSimple ().build ();
 		parser = new CmdSchemeParser (scheme);
 	}
 
