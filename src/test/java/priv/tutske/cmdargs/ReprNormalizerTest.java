@@ -51,7 +51,7 @@ public class ReprNormalizerTest {
 	@Test
 	public void it_should_normalize_the_input () {
 		ReprNormalizer normalizer = new ReprNormalizer (inputs);
-		assertThat (normalizer.normalize (), is (expected));
+		assertThat (normalizer.getLong (), is (expected));
 	}
 
 }

@@ -7,8 +7,16 @@ public class ReprNormalizer {
 	public ReprNormalizer (String ... representations) {
 		this.reprs = representations;
 	}
-	
-	public String normalize () {
+
+	public boolean isShort () {
+		if ( reprs == null ) { return true; }
+		if ( reprs.length != 1 ) { return false; }
+		if ( reprs[0] == null ) { return true; }
+		String repr = reprs[0];
+		return repr.length () < 2 || (repr.length () < 3 && repr.startsWith ("-"));
+	}
+
+	public String getLong () {
 		StringBuilder builder = new StringBuilder ().append ("-");
 		for ( String repr : reprs ) {
 			builder.append("-").append (normalizeSingle (repr));
@@ -16,9 +24,18 @@ public class ReprNormalizer {
 		return builder.toString ();
 	}
 
+	public String getShort () {
+		if ( reprs == null || reprs[0] == null ) { return ""; }
+		String repr = reprs[0].trim ();
+		if ( repr.length () == 0 || repr.startsWith ("-") ) { return repr; }
+		return "-" + repr;
+	}
+
 	private String normalizeSingle (String repr) {
+		if ( repr == null ) { return ""; }
 		// Remove double spaces, and spaces around a dash.
-		repr = repr.trim ().replaceAll ("\\s+", " ").replace (" -", "-").replace ("- ", "-");
+		repr = repr.trim ().replaceAll ("\\s+", " ");
+		repr = repr.replace (" -", "-").replace ("- ", "-");
 
 		checkForErrors (repr);
 
@@ -28,6 +45,7 @@ public class ReprNormalizer {
 	}
 	
 	private void checkForErrors (String repr) {
+		if ( isShort () ) { return; }
 		if ( repr.contains("\\s") && repr.contains ("-") ) {
 			throw new RuntimeException ("can not contain spaces and whitespace: `" + repr + "`");
 		}

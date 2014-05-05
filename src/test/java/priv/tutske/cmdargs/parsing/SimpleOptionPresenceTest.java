@@ -18,14 +18,14 @@ import priv.tutske.cmdargs.CmdSchemeParser;
 
 
 @RunWith (Parameterized.class)
-public class SimpleParserPresenceTest {
+public class SimpleOptionPresenceTest {
 
 	private String [] args;
 	private String option;
 	private boolean present;
 	private Parser parser;
 
-	public SimpleParserPresenceTest (String cmd, String option, boolean present) {
+	public SimpleOptionPresenceTest (String cmd, String option, boolean present) {
 		this.args = cmd.split (" ");
 		this.option = option;
 		this.present = present;

@@ -1,6 +1,7 @@
 package priv.tutske.cmdargs;
 
 import org.tutske.cmdargs.Option;
+import org.tutske.cmdargs.exceptions.RepresentationException;
 
 
 public abstract class BareOption {
@@ -24,26 +25,22 @@ public abstract class BareOption {
 	}
 
 	public BareOption (String longRepr, String shortRepr, boolean required) {
-		longRepr = new ReprNormalizer (longRepr).normalize ();
+		longRepr = new ReprNormalizer (longRepr).getLong ();
 
-		if ( shortRepr != null && shortRepr.length () != 1 ) {
-			throw new IllegalArgumentException ("Short Options can only be one char.");
-		}
+		ReprNormalizer normalizer = new ReprNormalizer (shortRepr);
+		if ( ! normalizer.isShort () ) { throw new RepresentationException (shortRepr); }
 
 		this.longRepr = longRepr;
-		this.shortRepr = shortRepr;
+		this.shortRepr = normalizer.getShort ();
 		this.required = required;
 	}
 
 	/* partial implementation for options */
 
 	public boolean matches (String option) {
-		if (option.length () < 2 && shortRepr != null ) {
-			return option.equals (shortRepr);
-		}
-		if ( option.length () < 2 ) { return false; }
-		String repr = new ReprNormalizer (option).normalize ();
-		return repr.equals (getRepresentation ());
+		ReprNormalizer normalizer = new ReprNormalizer (option);
+		if ( normalizer.isShort () ) { return normalizer.getShort ().equals (shortRepr); }
+		return normalizer.getLong ().equals (getRepresentation ());
 	}
 
 	public boolean isRequired () {

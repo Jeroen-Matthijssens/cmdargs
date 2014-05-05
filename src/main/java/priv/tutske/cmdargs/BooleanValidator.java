@@ -22,6 +22,7 @@ public class BooleanValidator implements Validator<Boolean> {
 
 	@Override
 	public boolean isValid (String value) {
+		if ( value == null ) { return false; }
 		return normalize (value).matches ("|(true)|(yes)|(false)|(no)");
 	}
 

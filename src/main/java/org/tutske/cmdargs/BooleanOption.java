@@ -34,8 +34,8 @@ public class BooleanOption extends BareOption implements ValueOption<Boolean> {
 		if ( b ) { return b; }
 		if ( option.length () < 2 ) { return false; }
 
-		String repr = new ReprNormalizer (option).normalize ();
-		String not = new ReprNormalizer ("not", getRepresentation ()).normalize ();
+		String repr = new ReprNormalizer (option).getLong ();
+		String not = new ReprNormalizer ("not", getRepresentation ()).getLong ();
 		return repr.equals (not);
 	}
 

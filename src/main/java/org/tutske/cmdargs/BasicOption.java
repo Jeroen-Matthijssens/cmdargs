@@ -25,7 +25,9 @@ public class BasicOption extends BareOption implements Option {
 
 	@Override
 	public String toString () {
-		return String.format ("<BasicOption: `%s`>", getRepresentation ());
+		return String.format ("<BasicOption: `%s`, `%s`>"
+			, getRepresentation (), getShortRepresentation ()
+		);
 	}
 
 }

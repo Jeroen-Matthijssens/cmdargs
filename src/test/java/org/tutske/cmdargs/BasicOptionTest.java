@@ -24,6 +24,18 @@ public class BasicOptionTest {
 	}
 
 	@Test
+	public void it_shoudl_match_its_short_representations () {
+		Option option = new BasicOption ("long option", "l");
+		assertThat (option.matches ("l"), is (true));
+	}
+
+	@Test
+	public void it_shoudl_match_its_short_representation_with_leading_dash () {
+		Option option = new BasicOption ("long option", "l");
+		assertThat (option.matches ("-l"), is (true));
+	}
+
+	@Test
 	public void it_should_match_representations_with_dashes () {
 		Option option = new BasicOption ("long option");
 		assertThat (option.matches ("long-option"), is (true));

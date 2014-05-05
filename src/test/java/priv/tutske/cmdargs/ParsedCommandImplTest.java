@@ -50,7 +50,7 @@ public class ParsedCommandImplTest {
 
 	@Test
 	public void it_should_find_its_command () {
-		Command command = new MainCommand ();
+		Command command = new CommandImpl ("MAIN");
 		parsed.setCommand(command);;
 
 		assertThat (parsed.getCommand (), is (command));
