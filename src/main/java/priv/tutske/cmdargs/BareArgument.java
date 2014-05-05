@@ -20,5 +20,6 @@ public class BareArgument {
 	public String getRepresentation () { return representation; }
 	public int getPosition () { return position; }
 	public boolean isRequired () { return required; }
+	public boolean matches (String repr) { return representation.equals (repr); }
 
 }

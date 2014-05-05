@@ -20,13 +20,38 @@ public class SchemeBuilderComplex {
 		builder.addOption (verbase);
 		builder.addOption (help);
 		builder.addCommand (buildInitCommand ());
+		builder.addCommand (buildConfigCommand ());
 		builder.addCommand (buildListCommand ());
 		builder.addCommand (buildMapCommand ());
 		builder.addCommand (buildShowCommand ());
-		builder.addCommand (buildConfigCommand ());
 		CommandScheme cmdscheme = builder.buildScheme ();
 
 		return cmdscheme;
+	}
+
+	private Command buildInitCommand () {
+		CommandSchemeBuilder builder = new CommandSchemeBuilder ();
+
+		builder.add (new StringValueOption ("repository path", "p"));
+		builder.addOption (verbase);
+		builder.addOption (help);
+		CommandScheme initScheme = builder.buildScheme ();
+		Command init = new CommandImpl ("init", initScheme);
+
+		return init;
+	}
+
+	private Command buildConfigCommand () {
+		CommandSchemeBuilder builder = new CommandSchemeBuilder ();
+
+		builder.add (new BasicOption ("global", "g"));
+		builder.add (new BasicOption ("unset", "u"));
+		builder.add (new StringArgument ("item", 0));
+		builder.add (new StringArgument ("value", 1, false));
+		CommandScheme configScheme = builder.buildScheme ();
+		Command config = new CommandImpl ("config", configScheme);
+
+		return config;
 	}
 
 	private Command buildListCommand () {
@@ -62,8 +87,6 @@ public class SchemeBuilderComplex {
 		CommandScheme listScheme = builder.buildScheme ();
 		Command list = new CommandImpl ("list", listScheme);
 
-		builder.reset ();
-
 		return list;
 	}
 
@@ -94,8 +117,6 @@ public class SchemeBuilderComplex {
 		CommandScheme mapScheme = builder.buildScheme ();
 		Command map = new CommandImpl ("push", mapScheme);
 
-		builder.reset ();
-
 		return map;
 	}
 
@@ -111,39 +132,10 @@ public class SchemeBuilderComplex {
 		CommandScheme showScheme = builder.buildScheme ();
 		Command show = new CommandImpl ("show", showScheme);
 
-		builder.reset ();
-
 		return show;
 	}
 
-	private Command buildInitCommand () {
-		CommandSchemeBuilder builder = new CommandSchemeBuilder ();
-
-		builder.add (new StringValueOption ("repository path", "p"));
-		builder.addOption (verbase);
-		builder.addOption (help);
-		CommandScheme initScheme = builder.buildScheme ();
-		Command init = new CommandImpl ("init", initScheme);
-
-		builder.reset ();
-
-		return init;
-	}
-
-	private Command buildConfigCommand () {
-		CommandSchemeBuilder builder = new CommandSchemeBuilder ();
-
-		builder.add (new BasicOption ("global", "g"));
-		builder.add (new BasicOption ("unset", "u"));
-		builder.add (new StringArgument ("item", 0));
-		builder.add (new StringArgument ("value", 1, false));
-		CommandScheme configScheme = builder.buildScheme ();
-		Command config = new CommandImpl ("config", configScheme);
-
-		builder.reset ();
-
-		return config;
-	}
+	/* -- recurring things -- */
 
 	private Command buildCreateCommand () {
 		CommandSchemeBuilder builder = new CommandSchemeBuilder ();
@@ -155,8 +147,6 @@ public class SchemeBuilderComplex {
 		builder.addOption (help);
 		CommandScheme createScheme = builder.buildScheme ();
 		Command create = new CommandImpl ("create", createScheme);
-
-		builder.reset ();
 
 		return create;
 	}
@@ -171,8 +161,6 @@ public class SchemeBuilderComplex {
 		builder.addOption (help);
 		CommandScheme deleteScheme = builder.buildScheme ();
 		Command delete = new CommandImpl ("delete", deleteScheme);
-
-		builder.reset ();
 
 		return delete;
 	}

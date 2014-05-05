@@ -34,8 +34,8 @@ public class SchemeBuilderSimple {
 		builder.add (new BasicOption ("help", "h"));
 
 		builder.add (new StringArgument ("first", 0));
-		builder.add (new StringArgument ("first", 1));
-		builder.add (new StringArgument ("first", 2, false));
+		builder.add (new StringArgument ("second", 1));
+		builder.add (new StringArgument ("third", 2, false));
 
 		return builder.buildScheme ();
 	}

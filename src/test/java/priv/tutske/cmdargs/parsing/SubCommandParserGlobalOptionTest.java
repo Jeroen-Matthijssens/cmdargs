@@ -23,7 +23,9 @@ public class SubCommandParserGlobalOptionTest {
 	private String [] args;
 	private String option;
 	private boolean present;
+
 	private Parser parser;
+	CommandScheme cmdscheme;
 
 	public SubCommandParserGlobalOptionTest (String args, String option, boolean present) {
 		this.args = args.split (" ");
@@ -51,14 +53,15 @@ public class SubCommandParserGlobalOptionTest {
 
 	@Before
 	public void setup () throws CommandLineException {
-		CommandScheme cmdscheme = new SchemeBuilderComplex ().build ();
+		cmdscheme = new SchemeBuilderComplex ().build ();
 		parser = new CmdSchemeParser (cmdscheme);
 	}
 
 	@Test
 	public void it_should () {
-		ParsedCommand options = parser.parse (args);
-		assertThat (options.isPresent (option), is (present));
+		ParsedCommand parsed = parser.parse (args);
+		Option opt = cmdscheme.getOption (option);
+		assertThat (parsed.isOptionPresent (opt), is (present));
 	}
 
 }

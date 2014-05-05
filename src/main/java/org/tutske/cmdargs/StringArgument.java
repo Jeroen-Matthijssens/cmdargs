@@ -19,4 +19,9 @@ public class StringArgument extends BareArgument implements Argument<String> {
 		return NoopValidator.newInstance ();
 	}
 
+	@Override
+	public String toString () {
+		return String.format ("<StringArgument: %s>", getRepresentation ());
+	}
+
 }

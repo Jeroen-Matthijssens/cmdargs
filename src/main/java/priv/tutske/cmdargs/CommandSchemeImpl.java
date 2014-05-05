@@ -68,17 +68,6 @@ public class CommandSchemeImpl implements CommandScheme {
 	}
 
 	@Override
-	public boolean hasCommand (String command) {
-		try { return getCommand (command) != null; }
-		catch (MissingResourceException e) { return false; }
-	}
-
-	@Override
-	public boolean hasCommand (Command command) {
-		return commands.indexOf (command) != -1;
-	}
-
-	@Override
 	public Option getOption (String representation) {
 		if ( options == null ) { throw new RuntimeException (); }
 
@@ -88,6 +77,17 @@ public class CommandSchemeImpl implements CommandScheme {
 
 		String msg = "Option could not be found `" + representation + "`";
 		throw new MissingResourceException (msg, "Option", representation);
+	}
+
+	@Override
+	public boolean hasCommand (Command command) {
+		return commands.indexOf (command) != -1;
+	}
+
+	@Override
+	public boolean hasCommand (String command) {
+		try { return getCommand (command) != null; }
+		catch (MissingResourceException e) { return false; }
 	}
 
 	@Override
@@ -103,13 +103,32 @@ public class CommandSchemeImpl implements CommandScheme {
 	}
 
 	@Override
-	public int nrOfArguments () {
-		return arguments.size ();
+	public boolean hasArgument (Argument<?> argument) {
+		return arguments != null && arguments.contains (argument);
 	}
 
 	@Override
-	public Argument<?> getArgument (int position) {
-		return arguments.get (position);
+	public boolean hasArgument (String argument) {
+		try { return getCommand (argument) != null; }
+		catch (MissingResourceException e) { return false; }
+	}
+
+	@Override
+	public Argument<?> getArgument (String argstring) {
+		if ( arguments == null ) { throw new RuntimeException (); }
+
+		for (Argument<?> argument : arguments ) {
+			if ( argument.matches (argstring) ) { return argument; }
+		}
+
+		String msg = "command could not be found `" + argstring + "`";
+		throw new MissingResourceException (msg, "Argument", argstring);
+	}
+
+	@Override
+	public List<Argument<?>> getArguments () {
+		if ( arguments == null ) { return new ArrayList<Argument<?>> (); }
+		return arguments;
 	}
 
 	/* -- privates -- */

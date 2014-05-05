@@ -23,7 +23,9 @@ public class SimpleParserValueTest {
 	private String [] args;
 	private String option;
 	private Object value;
+
 	private Parser parser;
+	private CommandScheme scheme;
 
 	public SimpleParserValueTest (String cmd, String option, Object value) {
 		this.args = cmd.split (" ");
@@ -54,14 +56,15 @@ public class SimpleParserValueTest {
 
 	@Before
 	public void setup () throws CommandLineException {
-		CommandScheme scheme = new SchemeBuilderSimple ().build ();
+		scheme = new SchemeBuilderSimple ().build ();
 		parser = new CmdSchemeParser (scheme);
 	}
 
 	@Test
 	public void it_should_have_the_option () {
 		ParsedCommand options = parser.parse (args);
-		assertThat (options.getValue (option), is ((Object) value));
+		ValueOption<?> opt = (ValueOption<?>) scheme.getOption (option);
+		assertThat (options.getOptionValue (opt), is ((Object) value));
 	}
 
 }

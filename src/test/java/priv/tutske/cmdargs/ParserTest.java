@@ -101,11 +101,14 @@ public class ParserTest {
 	public void it_should_find_sub_command_options ()
 	throws CommandLineException {
 		String [] args = {"create", "-h", "--path=path/to/file"};
-		ParsedCommand parsed = parser.parse (args);
-		ParsedCommand subparsed = parsed.getParsed ();
 
-		assertThat (subparsed.isPresent ("path"), is (true));
-		assertThat (subparsed.isPresent ("help"), is (true));
+		ParsedCommand parsed = parser.parse (args);
+		ParsedCommand subparsed = parsed.getParsedCommand ();
+		Option path = new BasicOption ("path");
+		Option help = new BasicOption ("help");
+
+		assertThat (subparsed.isOptionPresent (path), is (true));
+		assertThat (subparsed.isOptionPresent (help), is (true));
 	}
 
 	@Test (expected = MissingSubCommandException.class)

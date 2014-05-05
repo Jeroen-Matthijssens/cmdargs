@@ -13,13 +13,17 @@ public class ParsedCommandImpl implements ParsedCommand {
 	private Command command;
 	private ParsedCommand parsed;
 	private List<Option> options;
-	private Map<Option, Object> values;
+	private List<Argument<?>> arguments;
+	private Map<Option, Object> optValues;
+	private Map<Argument<?>, Object> argValues;
 
 	/* constructors */
 
 	public ParsedCommandImpl () {
 		options = new ArrayList<Option> ();
-		values = new HashMap<Option, Object> ();
+		arguments = new ArrayList<Argument<?>> ();
+		optValues = new HashMap<Option, Object> ();
+		argValues = new HashMap<Argument<?>, Object> ();
 	}
 
 	/* implementing `ParsedOptions` */
@@ -30,43 +34,56 @@ public class ParsedCommandImpl implements ParsedCommand {
 	}
 
 	@Override
-	public boolean isPresent (String representation) {
-		try { return findOption (representation) != null; }
-		catch (RuntimeException e) { return false; }
-	}
-
-	@Override
-	public boolean isPresent (Option option) {
-		return options.contains (option);
-	}
-
-	@Override
 	public Command getCommand () {
 		return command;
 	}
 
 	@Override
-	public ParsedCommand getParsed () {
+	public ParsedCommand getParsedCommand () {
 		return parsed;
 	}
 
 	@Override
-	public <T> T getValue (String representation) {
-		Option option = findOption (representation);
-		if ( ! (option instanceof ValueOption) ) { throw new RuntimeException (); }
-		return getValue ((ValueOption<T>) option);
+	public boolean isOptionPresent (Option option) {
+		return options.contains (option);
 	}
 
 	@Override
-	public <T> T getValue (ValueOption<T> option){
-		return (T) values.get (option);
+	public <T> T getOptionValue (ValueOption<T> option){
+		return (T) optValues.get (option);
+	}
+
+	@Override
+	public boolean isArgumentPresent (Argument<?> argument) {
+		return options.contains (argument);
+	}
+
+	@Override
+	public <T> T getArgumentValue (Argument<T> argument) {
+		return (T) argValues.get (argument);
+	}
+
+	@Override
+	public String [] getArgumentValues () {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/* functions to buildup the ParsedOptions*/
 
 	public <T> void add (ValueOption<T> option, T value) {
 		options.add (option);
-		values.put (option, value);
+		optValues.put (option, value);
+	}
+
+	public <T> void add (Argument<T> argument, T value) {
+		arguments.add (argument);
+		argValues.put (argument, value);
+	}
+
+	public void addArgument (Argument<?> argument, Object value) {
+		arguments.add (argument);
+		argValues.put (argument, value);
 	}
 
 	public void add (Option option) {
@@ -79,14 +96,6 @@ public class ParsedCommandImpl implements ParsedCommand {
 
 	public void setParsed (ParsedCommand parsed) {
 		this.parsed = parsed;
-	}
-
-	private Option findOption (String representation) {
-		representation = new ReprNormalizer (representation).normalize ();
-		for ( Option option : options ) {
-			if ( option.matches(representation) ) { return option; }
-		}
-		throw new RuntimeException ("option not found `" + representation + "`");
 	}
 
 }

@@ -75,7 +75,8 @@ public class SimpleParserPresenceTest {
 	@Test
 	public void it_should_have_the_option () {
 		ParsedCommand options = parser.parse (args);
-		assertThat (options.isPresent (option), is (present));
+		Option opt = new BasicOption (option);
+		assertThat (options.isOptionPresent (opt), is (present));
 	}
 
 }

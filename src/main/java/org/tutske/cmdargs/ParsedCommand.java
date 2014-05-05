@@ -4,13 +4,15 @@ package org.tutske.cmdargs;
 public interface ParsedCommand {
 
 	public boolean hasCommand ();
-	public boolean isPresent (String representation);
-	public boolean isPresent (Option option);
-
 	public Command getCommand ();
-	public ParsedCommand getParsed ();
+	public ParsedCommand getParsedCommand ();
 
-	public <T> T getValue (String representation);
-	public <T> T getValue (ValueOption<T> option);
+	public boolean isOptionPresent (Option option);
+	public <T> T getOptionValue (ValueOption<T> option);
+
+	public boolean isArgumentPresent (Argument<?> argument);
+	public <T> T getArgumentValue (Argument<T> argument);
+
+	public String [] getArgumentValues ();
 
 }
