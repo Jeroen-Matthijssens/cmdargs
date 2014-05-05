@@ -23,16 +23,27 @@ public class CommandSchemeBuilder {
 		arguments = new ArrayList<Argument<?>> ();
 	}
 
+	public void addOption (Option option) {
+		add (option);
+	}
+
 	public void add (Option option) {
 		// If multiple options with the same representation are added more than once there
 		// is a problem. Abuse the fact that equals is based on the long representation.
 		if (options.indexOf (option) != -1) { throw new IllegalArgumentException (); }
 		options.add (option);
 	}
+	public void addCommand (Command command) {
+		add (command);
+	}
 
 	public void add (Command command) {
 		if ( arguments.size () != 0 ) { throw new RuntimeException (NOT_BOTH); }
 		commands.add (command);
+	}
+
+	public void addArgument (Argument<?> argument) {
+		add (argument);
 	}
 
 	public void add (Argument<?> argument) {
