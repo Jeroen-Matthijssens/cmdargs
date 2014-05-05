@@ -17,6 +17,6 @@ public class MainCommand implements Command {
 
 	public boolean matches (String representation) { return false; }
 	public String getRepresentation () { return "MAIN"; }
-	public CommandScheme getOptionScheme () { return scheme; }
+	public CommandScheme getCommandScheme () { return scheme; }
 
 }

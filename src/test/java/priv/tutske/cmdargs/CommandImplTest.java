@@ -26,7 +26,7 @@ public class CommandImplTest {
 
 	@Test
 	public void it_should_know_its_options_scheme () {
-		assertThat (cmd.getOptionScheme (), not (nullValue ()));
+		assertThat (cmd.getCommandScheme (), not (nullValue ()));
 	}
 
 	@Test

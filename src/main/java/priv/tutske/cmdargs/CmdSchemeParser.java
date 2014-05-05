@@ -64,7 +64,7 @@ public class CmdSchemeParser implements Parser {
 
 		Command command = handleCommand ();
 		cmdParsed.setCommand (command);
-		CmdSchemeParser parser = new CmdSchemeParser (command.getOptionScheme ());
+		CmdSchemeParser parser = new CmdSchemeParser (command.getCommandScheme ());
 		cmdParsed.setParsed (parser.parse (tokens));
 	}
 

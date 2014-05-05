@@ -40,7 +40,7 @@ public class CommandImpl implements Command {
 		return repr;
 	}
 
-	public CommandScheme getOptionScheme () {
+	public CommandScheme getCommandScheme () {
 		return scheme;
 	}
 
