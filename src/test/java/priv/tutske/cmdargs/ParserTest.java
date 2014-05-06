@@ -12,15 +12,15 @@ import org.tutske.cmdargs.exceptions.*;
 
 public class ParserTest {
 
-	private CommandSchemeBuilder schemeBuilder;
+	private CommandSchemeBuilderImpl schemeBuilder;
 	private Parser parser;
 
 	@Before
 	public void setup () {
-		schemeBuilder = new CommandSchemeBuilder ();
+		schemeBuilder = new CommandSchemeBuilderImpl ();
 
 		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new StringValueOption ("path", "p"));
+		schemeBuilder.add (new StringOption ("path", "p"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme createScheme = schemeBuilder.buildScheme ();
 		Command create = new CommandImpl ("create", createScheme);
@@ -36,14 +36,14 @@ public class ParserTest {
 		schemeBuilder.reset ();
 
 		schemeBuilder.add (new BasicOption ("working directory", "w"));
-		schemeBuilder.add (new StringValueOption ("layout", "l"));
-		schemeBuilder.add (new StringValueOption ("root", "r"));
+		schemeBuilder.add (new StringOption ("layout", "l"));
+		schemeBuilder.add (new StringOption ("root", "r"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		schemeBuilder.add (create);
 		schemeBuilder.add (list);
 		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
 
-		parser = new CmdSchemeParser (cmdscheme);
+		parser = new ParserImpl (cmdscheme);
 	}
 
 	@Test
@@ -107,8 +107,8 @@ public class ParserTest {
 		Option path = new BasicOption ("path");
 		Option help = new BasicOption ("help");
 
-		assertThat (subparsed.isOptionPresent (path), is (true));
-		assertThat (subparsed.isOptionPresent (help), is (true));
+		assertThat (subparsed.hasOption (path), is (true));
+		assertThat (subparsed.hasOption (help), is (true));
 	}
 
 	@Test (expected = MissingSubCommandException.class)

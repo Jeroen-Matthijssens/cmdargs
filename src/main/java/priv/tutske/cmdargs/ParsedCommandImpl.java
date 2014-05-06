@@ -14,7 +14,7 @@ public class ParsedCommandImpl implements ParsedCommand {
 	private ParsedCommand parsed;
 	private List<Option> options;
 	private List<Argument<?>> arguments;
-	private Map<Option, Object> optValues;
+	private Map<Option, List<Object>> optValues;
 	private Map<Argument<?>, Object> argValues;
 
 	/* constructors */
@@ -22,7 +22,7 @@ public class ParsedCommandImpl implements ParsedCommand {
 	public ParsedCommandImpl () {
 		options = new ArrayList<Option> ();
 		arguments = new ArrayList<Argument<?>> ();
-		optValues = new HashMap<Option, Object> ();
+		optValues = new HashMap<Option, List<Object>> ();
 		argValues = new HashMap<Argument<?>, Object> ();
 	}
 
@@ -44,17 +44,23 @@ public class ParsedCommandImpl implements ParsedCommand {
 	}
 
 	@Override
-	public boolean isOptionPresent (Option option) {
+	public boolean hasOption (Option option) {
 		return options.contains (option);
 	}
 
 	@Override
 	public <T> T getOptionValue (ValueOption<T> option){
-		return (T) optValues.get (option);
+		return (T) (optValues.get (option).get (0));
 	}
 
 	@Override
-	public boolean isArgumentPresent (Argument<?> argument) {
+	public <T> List<T> getOptionValues (ValueOption<T> option) {
+		List<? extends Object> values = optValues.get (option);
+		return (List<T>) values;
+	}
+
+	@Override
+	public boolean hasArgument (Argument<?> argument) {
 		return options.contains (argument);
 	}
 
@@ -72,8 +78,11 @@ public class ParsedCommandImpl implements ParsedCommand {
 	/* functions to buildup the ParsedOptions*/
 
 	public <T> void add (ValueOption<T> option, T value) {
+		if ( ! optValues.containsKey (option) ) {
+			optValues.put (option, new ArrayList<Object> ());
+		}
 		options.add (option);
-		optValues.put (option, value);
+		optValues.get (option).add (value);
 	}
 
 	public <T> void add (Argument<T> argument, T value) {

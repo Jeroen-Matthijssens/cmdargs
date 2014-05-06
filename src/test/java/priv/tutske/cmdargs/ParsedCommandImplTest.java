@@ -20,32 +20,32 @@ public class ParsedCommandImplTest {
 
 	@Test
 	public void it_should_find_the_value_with_the_option () {
-		ValueOption<String> option = new StringValueOption ("name", "n");
+		ValueOption<String> option = new StringOption ("name", "n");
 		String value = "The Value";
 		parsed.add (option, value);
 
-		assertThat (parsed.isOptionPresent (option), is (true));
+		assertThat (parsed.hasOption (option), is (true));
 		assertThat (parsed.getOptionValue (option), is (value));
 	}
 
 	@Test
 	public void it_should_find_the_option_with_new_created_option () {
-		ValueOption<String> name = new StringValueOption ("name", "n");
+		ValueOption<String> name = new StringOption ("name", "n");
 		String value = "The Value";
 		parsed.add (name, value);
 
 		Option newname = new BasicOption ("name");
-		assertThat (parsed.isOptionPresent (newname), is (true));
+		assertThat (parsed.hasOption (newname), is (true));
 	}
 
 	@Test
 	public void it_should_find_the_value_with_new_created_option () {
-		ValueOption<String> name = new StringValueOption ("name", "n");
+		ValueOption<String> name = new StringOption ("name", "n");
 		String value = "The Value";
 		parsed.add (name, value);
 
-		ValueOption<String> newname = new StringValueOption ("name");
-		assertThat (parsed.isOptionPresent (newname), is (true));
+		ValueOption<String> newname = new StringOption ("name");
+		assertThat (parsed.hasOption (newname), is (true));
 	}
 
 	@Test

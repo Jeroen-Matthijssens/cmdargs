@@ -6,7 +6,7 @@ import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
 
-public class CmdSchemeParser implements Parser {
+public class ParserImpl implements Parser {
 
 	private ParsedCommandImpl cmdParsed;
 	private CommandScheme scheme;
@@ -14,11 +14,11 @@ public class CmdSchemeParser implements Parser {
 
 	/* Constructors */
 
-	private CmdSchemeParser () {
+	private ParserImpl () {
 		cmdParsed = new ParsedCommandImpl ();
 	}
 
-	public CmdSchemeParser (CommandScheme scheme) {
+	public ParserImpl (CommandScheme scheme) {
 		this ();
 		this.scheme = scheme;
 	}
@@ -64,7 +64,7 @@ public class CmdSchemeParser implements Parser {
 
 		Command command = handleCommand ();
 		cmdParsed.setCommand (command);
-		CmdSchemeParser parser = new CmdSchemeParser (command.getCommandScheme ());
+		ParserImpl parser = new ParserImpl (command.getCommandScheme ());
 		cmdParsed.setParsed (parser.parse (tokens));
 	}
 
@@ -72,8 +72,14 @@ public class CmdSchemeParser implements Parser {
 	throws CommandLineException {
 		String [] parsed = tokens.consume ().split ("=", 2);
 
-		if ( parsed.length == 2 ) { addOption (parsed[0], parsed[1]); }
-		else { addOption (parsed[0], ""); }
+		if ( parsed.length == 1 ) {
+			addOption (parsed[0], "");
+			return;
+		}
+		String [] values = parsed [1].split (",");
+		for ( String value : values ) {
+			addOption (parsed[0], value);
+		}
 	}
 
 	private void handleShortOption ()

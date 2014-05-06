@@ -2,54 +2,52 @@ package priv.tutske.cmdargs.parsing;
 
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Arrays;
 
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
+
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
-
 import priv.tutske.cmdargs.ParserImpl;
 
 
 @RunWith (Parameterized.class)
-public class SimpleParserUnkownOptionTest {
+public class SimpleRequiredOptionAbsenceTest {
 
 	private String [] args;
 	private Parser parser;
 
-	public SimpleParserUnkownOptionTest (String cmd) {
+	public SimpleRequiredOptionAbsenceTest (String cmd) {
 		this.args = cmd.split (" ");
 	}
 
-	@Parameters
+	@Parameters (name="`{0}` is missing required value option")
 	public static Collection<Object []> arguments () {
 		return Arrays.asList (new Object [] [] {
-			{"--unknown"}
-			, {"--verbose --unknown"}
-			, {"--unknown --verbose"}
-			, {"--unknown=something"}
-			, {"-V --unknown"}
-			, {"-V --verbose"}
-			, {"--verbose -V"}
+			{""}
+			, {"-v --two-words"}
+			, {"-H"}
+			, {"--path"} /* no value given. */
 		});
 	}
 
 	@Before
-	public void setup () throws CommandLineException {
-		CommandScheme scheme = new SchemeBuilderSimple ().build ();
+	public void setup () {
+		CommandScheme scheme = new SchemeBuilderSimple ().buildWithRequired ();
 		parser = new ParserImpl (scheme);
 	}
 
-	@Test (expected = UnknownOptionException.class)
-	public void it_should_complain_about_unknown_options ()
-	throws CommandLineException {
+	@Ignore ("Not implemented yet.")
+	@Test (expected = CommandLineException.class)
+	public void it_should_complain_about_missing_required_option () {
 		parser.parse (args);
-		fail ("parser should complain when an option is not known");
+		fail ("Failed to complain about missing required option.");
 	}
 
 }

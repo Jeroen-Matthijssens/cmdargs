@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized;
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
-import priv.tutske.cmdargs.CmdSchemeParser;
+import priv.tutske.cmdargs.ParserImpl;
 
 
 @RunWith (Parameterized.class)
@@ -38,6 +38,8 @@ public class SimpleParserValueTest {
 		return Arrays.asList (new Object [] [] {
 			{"--not-enabled", "enabled", false}
 			, {"--NOT-ENABLED", "enabled", false}
+			, {"--no-enabled", "enabled", false}
+			, {"--NO-ENABLED", "enabled", false}
 			, {"--enabled", "enabled", true}
 			, {"--enabled=true", "enabled", true}
 			, {"--enabled=false", "enabled", false}
@@ -57,7 +59,7 @@ public class SimpleParserValueTest {
 	@Before
 	public void setup () throws CommandLineException {
 		scheme = new SchemeBuilderSimple ().build ();
-		parser = new CmdSchemeParser (scheme);
+		parser = new ParserImpl (scheme);
 	}
 
 	@Test

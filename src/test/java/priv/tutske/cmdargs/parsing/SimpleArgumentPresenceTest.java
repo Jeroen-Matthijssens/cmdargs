@@ -49,7 +49,7 @@ public class SimpleArgumentPresenceTest {
 	public void setup () {
 		CommandScheme cmdscheme = new SchemeBuilderSimple ().buildWitArguments ();
 		argument = cmdscheme.getArgument (argname);
-		parser = new CmdSchemeParser (cmdscheme);
+		parser = new ParserImpl (cmdscheme);
 	}
 
 	@Test

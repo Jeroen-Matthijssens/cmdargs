@@ -13,8 +13,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
 
 import org.tutske.cmdargs.*;
-import org.tutske.cmdargs.exceptions.*;
-import priv.tutske.cmdargs.CmdSchemeParser;
+import priv.tutske.cmdargs.ParserImpl;
 
 
 @RunWith (Parameterized.class)
@@ -41,6 +40,10 @@ public class SimpleOptionPresenceTest {
 			, {"--two-words", "two words", true}
 
 			, {"--not-enabled", "enabled", true}
+			, {"--enabled=false", "enabled", true}
+			, {"--enabled=true", "enabled", true}
+			, {"--no-enabled", "enabled", true}
+			, {"--NO-ENABLED", "enabled", true}
 			, {"--NOT-ENABLED", "enabled", true}
 			, {"--layout=simple", "layout", true}
 			, {"--LAYOUT=simple", "layout", true}
@@ -67,16 +70,16 @@ public class SimpleOptionPresenceTest {
 	}
 
 	@Before
-	public void setup () throws CommandLineException {
+	public void setup () {
 		CommandScheme scheme = new SchemeBuilderSimple ().build ();
-		parser = new CmdSchemeParser (scheme);
+		parser = new ParserImpl (scheme);
 	}
 
 	@Test
 	public void it_should_have_the_option () {
 		ParsedCommand options = parser.parse (args);
 		Option opt = new BasicOption (option);
-		assertThat (options.isOptionPresent (opt), is (present));
+		assertThat (options.hasOption (opt), is (present));
 	}
 
 }

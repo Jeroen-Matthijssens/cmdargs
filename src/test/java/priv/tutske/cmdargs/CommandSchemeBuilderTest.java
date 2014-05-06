@@ -11,7 +11,7 @@ import org.tutske.cmdargs.Option;
 import org.tutske.cmdargs.CommandScheme;
 
 import org.tutske.cmdargs.*;
-import priv.tutske.cmdargs.CommandSchemeBuilder;
+import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
 
 
 public class CommandSchemeBuilderTest {
@@ -25,7 +25,7 @@ public class CommandSchemeBuilderTest {
 
 	private Argument<String> firstArg;
 
-	private CommandSchemeBuilder schemeBuilder;
+	private CommandSchemeBuilderImpl schemeBuilder;
 
 	@Before
 	public void setup () {
@@ -38,7 +38,7 @@ public class CommandSchemeBuilderTest {
 
 		firstArg = new StringArgument ("first", 0);
 
-		schemeBuilder = new CommandSchemeBuilder ();
+		schemeBuilder = new CommandSchemeBuilderImpl ();
 	}
 
 	@Test

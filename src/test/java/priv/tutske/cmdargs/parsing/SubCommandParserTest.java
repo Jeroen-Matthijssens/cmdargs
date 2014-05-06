@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized;
 
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
-import priv.tutske.cmdargs.CmdSchemeParser;
+import priv.tutske.cmdargs.ParserImpl;
 
 
 @RunWith (Parameterized.class)
@@ -51,7 +51,7 @@ public class SubCommandParserTest {
 	@Before
 	public void setup () throws CommandLineException {
 		CommandScheme cmdscheme = new SchemeBuilderComplex ().build ();
-		parser = new CmdSchemeParser (cmdscheme);
+		parser = new ParserImpl (cmdscheme);
 	}
 
 	@Test

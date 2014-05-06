@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.tutske.cmdargs.*;
 
-public class CommandSchemeBuilder {
+public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 
 	private static final String NOT_BOTH = "Can not have both commands and arguments";
 
@@ -13,7 +13,7 @@ public class CommandSchemeBuilder {
 	List<Option> options;
 	List<Argument<?>> arguments;
 
-	public CommandSchemeBuilder () {
+	public CommandSchemeBuilderImpl () {
 		reset ();
 	}
 
@@ -23,32 +23,41 @@ public class CommandSchemeBuilder {
 		arguments = new ArrayList<Argument<?>> ();
 	}
 
-	public void addOption (Option option) {
+	public CommandSchemeBuilder addOption (Option option) {
 		add (option);
+		return this;
 	}
 
-	public void add (Option option) {
+	public CommandSchemeBuilder add (Option option) {
 		// If multiple options with the same representation are added more than once there
 		// is a problem. Abuse the fact that equals is based on the long representation.
-		if ( options.indexOf (option) < 0 ) { options.add (option); return; }
-		throw new IllegalArgumentException (option.toString ());
-	}
-	public void addCommand (Command command) {
-		add (command);
+		if ( options.indexOf (option) > -1 ) {
+			throw new IllegalArgumentException (option.toString ());
+		}
+		options.add (option);
+		return this;
 	}
 
-	public void add (Command command) {
+	public CommandSchemeBuilder addCommand (Command command) {
+		add (command);
+		return this;
+	}
+
+	public CommandSchemeBuilder add (Command command) {
 		if ( arguments.size () != 0 ) { throw new RuntimeException (NOT_BOTH); }
 		commands.add (command);
+		return this;
 	}
 
-	public void addArgument (Argument<?> argument) {
+	public CommandSchemeBuilder addArgument (Argument<?> argument) {
 		add (argument);
+		return this;
 	}
 
-	public void add (Argument<?> argument) {
+	public CommandSchemeBuilder add (Argument<?> argument) {
 		if ( commands.size () != 0 ) { throw new RuntimeException (NOT_BOTH); }
 		arguments.add (argument);
+		return this;
 	}
 
 	public CommandScheme buildScheme () {

@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized;
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
-import priv.tutske.cmdargs.CmdSchemeParser;
+import priv.tutske.cmdargs.ParserImpl;
 
 
 @RunWith (Parameterized.class)
@@ -54,14 +54,14 @@ public class SubCommandParserGlobalOptionTest {
 	@Before
 	public void setup () throws CommandLineException {
 		cmdscheme = new SchemeBuilderComplex ().build ();
-		parser = new CmdSchemeParser (cmdscheme);
+		parser = new ParserImpl (cmdscheme);
 	}
 
 	@Test
 	public void it_should () {
 		ParsedCommand parsed = parser.parse (args);
 		Option opt = cmdscheme.getOption (option);
-		assertThat (parsed.isOptionPresent (opt), is (present));
+		assertThat (parsed.hasOption (opt), is (present));
 	}
 
 }

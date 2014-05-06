@@ -13,9 +13,9 @@ import org.junit.runners.Parameterized;
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
-import priv.tutske.cmdargs.CmdSchemeParser;
+import priv.tutske.cmdargs.ParserImpl;
 import priv.tutske.cmdargs.CommandImpl;
-import priv.tutske.cmdargs.CommandSchemeBuilder;
+import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
 
 
 @RunWith (Parameterized.class)
@@ -43,10 +43,10 @@ public class SubCommandParserMissingCommandTest {
 
 	@Before
 	public void setup () {
-		CommandSchemeBuilder schemeBuilder = new CommandSchemeBuilder ();
+		CommandSchemeBuilderImpl schemeBuilder = new CommandSchemeBuilderImpl ();
 
-		schemeBuilder.add (new StringValueOption ("template", "p"));
-		schemeBuilder.add (new StringValueOption ("layout", "l"));
+		schemeBuilder.add (new StringOption ("template", "p"));
+		schemeBuilder.add (new StringOption ("layout", "l"));
 		schemeBuilder.add (new BasicOption ("interactive", "i"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		CommandScheme createScheme = schemeBuilder.buildScheme ();
@@ -55,7 +55,7 @@ public class SubCommandParserMissingCommandTest {
 		schemeBuilder.reset ();
 
 		schemeBuilder.add (new BooleanOption ("recursive", "r"));
-		schemeBuilder.add (new StringValueOption ("depth", "d"));
+		schemeBuilder.add (new StringOption ("depth", "d"));
 		schemeBuilder.add (new BasicOption ("verbose", "v"));
 		schemeBuilder.add (new BasicOption ("human readable", "H"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
@@ -65,13 +65,13 @@ public class SubCommandParserMissingCommandTest {
 		schemeBuilder.reset ();
 
 		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new StringValueOption ("path", "p"));
+		schemeBuilder.add (new StringOption ("path", "p"));
 		schemeBuilder.add (new BasicOption ("help", "h"));
 		schemeBuilder.add (create);
 		schemeBuilder.add (list);
 		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
 
-		parser = new CmdSchemeParser (cmdscheme);
+		parser = new ParserImpl (cmdscheme);
 	}
 
 	@Test (expected = MissingSubCommandException.class)

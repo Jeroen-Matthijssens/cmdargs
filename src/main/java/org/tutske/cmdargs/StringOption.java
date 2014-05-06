@@ -4,23 +4,23 @@ import priv.tutske.cmdargs.BareValueOption;
 import priv.tutske.cmdargs.NoopValidator;
 
 
-public class StringValueOption extends BareValueOption implements ValueOption<String> {
+public class StringOption extends BareValueOption implements ValueOption<String> {
 
 	/* constructors */
 
-	public StringValueOption (String longRepr) {
+	public StringOption (String longRepr) {
 		super (longRepr);
 	}
 
-	public StringValueOption (String longRepr, boolean required){
+	public StringOption (String longRepr, boolean required){
 		super (longRepr, required);
 	}
 
-	public StringValueOption (String longRepr, String shortRepr) {
+	public StringOption (String longRepr, String shortRepr) {
 		super (longRepr, shortRepr);
 	}
 
-	public StringValueOption (String longRepr, String shortRepr, boolean required) {
+	public StringOption (String longRepr, String shortRepr, boolean required) {
 		super (longRepr, shortRepr, required);
 	}
 

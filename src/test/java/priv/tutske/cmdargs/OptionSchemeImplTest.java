@@ -15,7 +15,7 @@ import org.tutske.cmdargs.BooleanOption;
 import org.tutske.cmdargs.Option;
 import org.tutske.cmdargs.CommandScheme;
 
-import org.tutske.cmdargs.StringValueOption;
+import org.tutske.cmdargs.StringOption;
 import priv.tutske.cmdargs.CommandSchemeImpl;
 
 public class OptionSchemeImplTest {
@@ -33,7 +33,7 @@ public class OptionSchemeImplTest {
 	public void setup () {
 		first = new BasicOption ("basic option", "f");
 		enabled = new BooleanOption ("boolean option", "b");
-		value = new StringValueOption ("value option", "v");
+		value = new StringOption ("value option", "v");
 		unknown = new BasicOption ("unknown option");
 
 		options = new ArrayList<Option> ();
