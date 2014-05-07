@@ -30,13 +30,16 @@ $ command --long-option -s -- -path/starts/with/dash
 ### Sub Commands
 
 Sub commands can be used. Sub commands can be nested if necessary `$ command sub deepsub`.
-Either the command (either the main command or a subcommand) always uses subcommands, or
-it never uses any.
+The command (either the main command or a subcommand) has to always uses subcommands or
+never use any. Which subcommands themselves use subcommands can vary depending on the
+subcommand, there is no restriction or correlation between subcommands with respect to the
+use of subcommands.
 
 A subcommand is a single word and is case insensitive.
 
 The first non option, non option value string that is found is treated as the subcommand.
 Commands can not occur after a `--`.
+
 Option can be given to both the subcommand and the command itself
 
 ```bash
@@ -49,7 +52,9 @@ As a convention short options allow values directly after the option. When more 
 short option is used, you can not group a short option with a value together with other
 short options.
 
-The first example is correct, the second and third example should give an error.
+The first example is correct, the third example gives an error. The second example is
+interpreted as having the options that correspond to `s`, `t`, and `v` and `value` as a
+trailing argument or a subcommand.
 
 ```bash
 $ command -st -v value -w other
@@ -66,28 +71,29 @@ $ command --long-option=value --other-long-option=other
 When there is no equals sign the value will be interpreted as either the subcommand or the
 first non option argument.
 
-### Value lists
+### Value Lists
 
 If an option can have a value, it can have multiple values. There are two ways to give
 mulitple values. The values can be given one at a time by repeating the option and then
-the next value in the list. This should work with both long and short options.
+the next value in the list. This works with both long and short options.
 
 ```bash
 $ command -l first -l second -l third
 $ command --long-option=first --long-option=second
 ```
 
-An other way is to specify the values in one go, this only works with short options. The
+An other way is to specify the values in one go, this only works for long options. The
 values are seperated by a comma. No spaces are allowed in this list.
 
 ```bash
-$ command --value-option=first,second,third
+$ command --long-option=first,second,third
 ```
 
 ### Boolean Options
 
-Allow for boolean options. As a convention allow the `not-` prefix to negate the option
-when it is a boolean value. Do not allow `--not-option=false` or `--not-option=true`.
+Allow for boolean options. As a convention allow the `not-` or `no-` prefix to negate the
+option when it is a boolean value. Do not allow `--not-option=false` or
+`--not-option=true`.
 
 ```bash
 $ command --enabled
@@ -96,7 +102,7 @@ $ command --enabled=true
 $ command --enabled=false
 ```
 
-## ordering
+## Ordering
 
 The only order that is preserved is that of multiple values being assigned to a single
 option. There is no way to infer which option of a pair came before the other. This means
@@ -106,7 +112,7 @@ that constructions such as:
 $ command --include=path/to/file --not --include=path/to/file/sub
 ```
 
-can not be given the meaning "include everthing under `path/to/file` but not what is
+can not be given the meaning "include everything under `path/to/file` but not what is
 under `path/to/file/sub`". The above example has the `--not` option set and the
 `--include` option, furthermore the `--include` option has two value assigned:
 `path/to/file` and `path/to/file/sub`. But there is no way to know where in the list of
@@ -115,8 +121,11 @@ values for `--include` the `--not` option would have appeared.
 
 # Constructing a scheme
 
-Keeping around references to the option that are valid minimized the risk of mistyping
-representations of the options.
+For the layout of the interfaces used here refer to the classes section.
+
+We keep around the references to the options used to create the `CommandScheme`. We can
+reuse these afterwards when looking up values, or checking for its presence. This
+minimizes the risk of mistyping the representation of the option.
 
 ```java
 public class Options {
@@ -137,8 +146,9 @@ public class Options {
 }
 ```
 
-A RuntimeException will be thrown if the parsing of the arguments has failed. The parser
-can print a usefull message to `System.out` when something goes wrong.
+A `RuntimeException` will be thrown if the parsing of the arguments has failed. The parser
+can print a usefull message to `System.out` when something goes wrong. Other
+`OutputStream`s can be given to the method call.
 
 ```java
 public static void main (String [] args) {
@@ -152,13 +162,15 @@ public static void main (String [] args) {
 ```
 
 As an example we just print out what was given to the `--message` option, but only if the
-`--print` option is given
+`--print` or `--print-all` option are given. If the value of `--print` is false we don't
+print anything either. With the `--print-all` option every value in the list of
+`--message` is printed on its own line.
 
 ```java
 public void run () {
 	if ( parsed.hasOption (Options.printAll) ) { printAll (); }
 	else if ( ! parsed.hasOption (Options.print) ) { return; }
-	else if ( parsed.getOptionValue (Options.print)) { printFirst (); }
+	else if ( parsed.getOptionValue (Options.print) ) { printFirst (); }
 }
 
 public void printAll () {
@@ -192,6 +204,24 @@ Hello
 World
 ```
 
+The corisponding input with short options gives the same result
+
+```bash
+$ java -jar command.jar -m 'Hello World!' -p
+Hello World!
+$ java -jar command.jar -m 'Hello World!' -p false
+$ java -jar command.jar -m 'Hello World!'
+$ java -jar command.jar -p -m 'Hello World!'
+Hello World!
+$ java -jar command.jar -m Hello -m World -p
+Hello
+$ java -jar command.jar -m Hello -m World -P
+Hello
+World
+```
+
+Using the options wrongly will produce useful outputs.
+
 ```java
 $ java -jar command.jar --print
 Error: missing required argument `--message`!
@@ -200,11 +230,40 @@ Error: missing value for `--message`!
 ```
 
 
-# Classes
+# API
+
+Adding functionality to the option and what they can accept is as simple as implementing
+the right interfaces. There is also a `CommandScheme` interface in case you do not wish to
+go through the builders. There are only four main once `Option`, `ValueOption<T>`,
+`Argument<T>` and `Commad`.
+
+There should generally not be any need to implement the `Parser`, `CommandScheme` or
+`ParsedCommand`, but this too is possible.
+
+## CommandSchemeBuilder
+
+This builder is used to create sub`Command`s and the `CommandScheme`s. The implementation
+provided by the factory will keep an internal state and will not flush it. As such it can
+not be reused unless one scheme extends the previous one.
+
+```java
+public interface CommandSchemeBuilder {
+	public CommandScheme buildScheme ();
+	public Command buildCommand (String representation);
+
+	public CommandSchemeBuilder add (Option option);
+	public CommandSchemeBuilder add (Argument<?> argument);
+	public CommandSchemeBuilder add (Command command);
+
+	public CommandSchemeBuilder addOption (Option option);
+	public CommandSchemeBuilder addArgument (Argument<?> argument);
+	public CommandSchemeBuilder addCommand (Command command);
+}
+```
 
 ## Option
 
-An Interface describing the options a valid option on the commandline.
+An Interface describing a valid option on the commandline.
 
 ```java
 public interface Option {
@@ -218,12 +277,24 @@ public interface Option {
 }
 ```
 
-When calling `option.getRepresentation ()` the string that is returned is always the
-representation with dashes (`long-option` instead of `long option`).
+`getRepresentation ()` should return the option in its dashed form with leading dashed.
+(`long-option` instead of `long option`). If the option accepts a value it should
+implement the following interface.
 
 ```java
 public interface ValueOption<T> extends Option {
-	public T validateValue (String value) throws WrongValueException;
+	public Validator<T> getValidator (String representation);
+}
+```
+
+The validator is used to check if a value on the commandline is acceptable for the option.
+It is also used to parse the value (as a string) into the actual representation as an
+object of type `T`.
+
+```java
+public interface Validator<T> {
+	public boolean isValid (String value);
+	public T parse (String value);
 }
 ```
 
@@ -268,7 +339,7 @@ public interface Argument<T> {
 }
 ```
 
-## SubCommand
+## Command
 
 The command should return a `CommandScheme` that represents the options, commands or
 arguments that can follow this command.
@@ -281,15 +352,58 @@ public interface Command {
 }
 ```
 
-One implementation is provided (`SubCommandImpl`). It can be instantiated with a string
-representing the subcommand, or with a string and an options scheme.
+
+## ParsedCommand
 
 ```java
-SubCommand command = new SubCommandImpl ("sub");
+public interface ParsedCommand {
+	public boolean hasCommand ();
+	public Command getCommand ();
+	public ParsedCommand getParsedCommand ();
 
-OptionScheme scheme = new CustomOptionsScheme ();
-SubCommand command = new SubCommandImpl ("sub", scheme);
+	public boolean hasOption (Option option);
+	public <T> T getOptionValue (ValueOption<T> option);
+	public <T> List<T> getOptionValues (ValueOption<T> option);
+
+	public boolean hasArgument (Argument<?> argument);
+	public <T> T getArgumentValue (Argument<T> argument);
+
+	public String [] getArgumentValues ();
+}
 ```
+
+The `getParsedCommand ()` only returns something sensible if `hasCommand ()` is true. It
+returns a new instance of `ParsedCommand` that represents the options and arguments or
+commands that were parsed for the command returned by `getCommand ()`.
+
+Say we have options: 
+
+```java
+Option longOpt = new BasicOption ("long", "l");
+Option otherOpt= new BasicOption ("other", "o");
+...
+ParsedCommand parsed = parser.parse (args);
+```
+
+and was called with 
+
+```bash
+$ command --long sub --other
+```
+
+`otherOpt` is only available under the sub command. While only `longOpt` is available
+directly.
+
+```java
+assert (parsed.hasOption (longOpt));
+PaserdCommand subparsed = parser.getParsedCommad ();
+assert (subparsed.hasOption (otherOpt));
+```
+
+When using the `getOptionValue ()` method, the option (or representation of the option) has te
+refer to an option that supports that type of value. If this is not the case the call will
+result in a `ClassCastException`.
+
 
 ## CommandScheme
 
@@ -321,164 +435,48 @@ public interface CommandScheme {
 ```
 
 
-## ParsedCommand
-
-```java
-public interface ParsedCommand {
-	public boolean hasCommand ();
-	public Command getCommand ();
-	public ParsedCommand getParsedCommand ();
-
-	public boolean isOptionPresent (Option option);
-	public <T> T getOptionValue (ValueOption<T> option);
-	public <T> List<T> getOptionValues (ValueOption<T> option);
-
-	public boolean isArgumentPresent (Argument<?> argument);
-	public <T> T getArgumentValue (Argument<T> argument);
-
-	public String [] getArgumentValues ();
-}
-```
-
-The `getParsedCommand ()` only returns something sensible if `hasCommand ()` is true. It
-returns a new instance of `ParsedCommand` that represents the options and arguments or
-commands that were parsed for the command returned by `getCommand ()`.
-
-When using the `getOptionValue ()` method, the option (or representation of the option) has te
-refer to an option that supports that type of value. If this is not the case the call will
-result in a `ClassCastException`.
-
 ## Parser
 
 An Interface for parsers.
 
 ```java
 public interface Parser {
-	public void parse (String [] args);
-	public boolean hasSubCommand ();
-	public String getSubCommand ();
-	public ParsedOptions getOptions ();
-	public ParsedOptions getGlobalOoptions ();
+	public ParsedCommand parse (String [] args);
 }
 ```
 
-One parser implementation is provided (`ParserImpl`).
 
-It can be instantiated with a list of subcommands. In this case there are no global
-options allowed. Recall that when a subcommand can be used, a subcommand has to be used
-for all valid `String [] args` sequences.
+# Planed features
 
-```java
-List<SubCommand> commands = buildSubCommandList ();
-Parser parser = new ParserImpl (commands);
-```
-
-It can be instantiated with a single options scheme. In this case no
-subcommands are allowed and the options scheme will be treathed as the global options
-scheme.
+## Bash completion support.
 
 ```java
-OptionScheme scheme = new CustomOptionScheme ();
-Parser parser = new ParserImpl (scheme);
+public class Options {
+	public static final Option first = new BasicOption ("first", "f");
+	public static final Option second = new BasicOption ("second", "s");
+	public static final Option third = new BasicOption ("third", "t");
+
+    public static final CommandScheme scheme = Options.createScheme ();
+
+	private static CommandScheme createScheme () {
+		return CommandSchemeBuilderFactory.newInstance ()
+			.addOption (first)
+			.addOption (second)
+			.addOption (third)
+			.buildScheme ();
+	}
+}
 ```
-
-It can be instantiated with an options scheme and a list op subcommands. This
-is the same as a list of subcommands except that global options are now allowed, and are
-specified by the options scheme given to `ParserImpl`.
-
-```java
-List<SubCommand> commands = buildSubCommandList ();
-OptionScheme scheme = new CustomOptionScheme ();
-Parser parser = new ParserImpl (scheme, commands);
-```
-
-
-
-
-# Example
-
-Suppose we want the following command to be valid.
 
 ```bash
-$ command -st -u short sub --long-option=long path/to/file
+$ command --<tab><tab>
+first    second    third
+$ command --se<tab>
+$ command --second
 ```
 
-We first need to specify that these options are valid. For this we build an
-`OptionScheme`. This will contain all the information needed to validate and parse the
-command line arguments.
 
-```java
-SchemeBuilder schemeBuilder = new SchemeBuilder ();
-
-schemeBuilder.add (new BasicOption ("long option"));
-schemeBuilder.add (new BasicOption ("short option", "s"));
-schemeBuilder.add (new ValueOption ("with value"));
-schemeBuilder.add (new BooleanOption ("enable");
-schemeBuilder.add (new Argument ("path", 0));
-
-OptionScheme scheme = schemeBuilder.buildScheme ();
-```
-
-When Using this in a program it could look something like this.
-
-
-```java
-public static main (String [] args) {
-	OptionScheme scheme = buildScheme ();
-	Parser parser = new ParserImpl (scheme);
-
-	parser.parse (args);
-	ParsedOptions options = parser.getOptions ();
-
-	assertThat (options.isPresent ("long option"), is (true));
-	assertThat (options.getValue ("long option"), is ("long"));
-
-	assertThat (options.isPresent ("s"), is (true));
-	assertThat (options.getValue ("s"), is ("short"));
-
-	assertThat (options.getArg (0), is ("path/to/file"));
-	assertThat (options.getArg ("path"), is ("path/to/file"));
-}
-
-private static OptionScheme buildScheme () {
-	SchemeBuilder schemeBuilder = new SchemeBuilder ();
-	...
-	return scheme;
-}
-
-```
-
-When parsing the following command.
-
-```bash
-$ command --long-option sub --sub-option
-```
-
-```java
-public static main (String [] args) {
-	OptionScheme scheme = buildScheme ();
-	Parser parser = new ParserImpl (scheme);
-
-	parser.parse (args);
-
-	assertThat (parser.hasCommand (), is (true));
-	assertThat (parser.getCommand (), is ("sub"));
-
-	ParsedOptions options = parser.getOptions ();
-	assertThat (options.isPresent ("long option"), is (false));
-	assertThat (options.isPresent ("sub option"), is (true));
-
-	ParsedOptions subOptions = parser.getGlobalOptions ();
-	assertThat (subOptions.isPresent ("long option"), is (true));
-	assertThat (subOptions.isPresent ("sub option"), is (false));
-}
-
-public static OptionScheme buildScheme () {
-
-}
-```
-
-# Possible extras?
+# Possible features
 
 - A way to indicate that one of a group of options is mandatory, for instance such as the
   tar command. It needs either an x, c, ... .
