@@ -43,7 +43,7 @@ public class CommandSchemeBuilderTest {
 
 	@Test
 	public void it_should_build_a_scheme () {
-		schemeBuilder.add (firstOpt);
+		schemeBuilder.addOption (firstOpt);
 		CommandScheme scheme = schemeBuilder.buildScheme ();
 
 		assertThat (scheme.hasOption ("basic option"), is (true));
@@ -51,14 +51,14 @@ public class CommandSchemeBuilderTest {
 
 	@Test (expected = IllegalArgumentException.class)
 	public void it_should_complain_when_adding_options_twice () {
-		schemeBuilder.add (firstOpt);
-		schemeBuilder.add (firstOpt);
+		schemeBuilder.addOption (firstOpt);
+		schemeBuilder.addOption (firstOpt);
 		fail ("Only one option with a specific long representation is allowed");
 	}
 
 	@Test
 	public void it_should_produce_a_scheme_that_knows_only_the_added_options () {
-		schemeBuilder.add (firstOpt);
+		schemeBuilder.addOption (firstOpt);
 		CommandScheme scheme = schemeBuilder.buildScheme ();
 
 		assertThat (scheme.hasOption ("unknown option"), is (false));
@@ -71,9 +71,9 @@ public class CommandSchemeBuilderTest {
 
 	@Test
 	public void it_should_reset_properly () {
-		schemeBuilder.add (unkownOpt);
+		schemeBuilder.addOption (unkownOpt);
 		schemeBuilder.reset ();
-		schemeBuilder.add (firstOpt);
+		schemeBuilder.addOption (firstOpt);
 
 		CommandScheme scheme = schemeBuilder.buildScheme ();
 		assertThat (scheme.hasOption ("unknown option"), is (false));
@@ -82,10 +82,10 @@ public class CommandSchemeBuilderTest {
 
 	@Test
 	public void it_should_reset_properly_after_building_scheme () {
-		schemeBuilder.add (unkownOpt);
+		schemeBuilder.addOption (unkownOpt);
 		schemeBuilder.buildScheme ();
 		schemeBuilder.reset ();
-		schemeBuilder.add (firstOpt);
+		schemeBuilder.addOption (firstOpt);
 
 		CommandScheme scheme = schemeBuilder.buildScheme ();
 		assertThat (scheme.hasOption ("unknown option"), is (false));

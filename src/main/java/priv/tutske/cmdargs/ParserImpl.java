@@ -52,7 +52,7 @@ public class ParserImpl implements Parser {
 		}
 
 		if ( (tokens.atEnd () || broken) && scheme.hasCommands () ) {
-			throw new MissingSubCommandException ();
+			throw new MissingCommandException ();
 		}
 
 		if ( tokens.atEnd () ) { return; }
@@ -109,14 +109,14 @@ public class ParserImpl implements Parser {
 			&& tokens.typeOfNext () == ArgsTokens.TokenType.NONE;
 	}
 
-	private Command handleCommand () throws MissingSubCommandException {
-		if ( tokens.atEnd () ) { throw new MissingSubCommandException (); }
+	private Command handleCommand () throws MissingCommandException {
+		if ( tokens.atEnd () ) { throw new MissingCommandException (); }
 
 		String repr = tokens.consume ();
 		if ( scheme.hasCommand (repr) ) { return scheme.getCommand(repr); }
 
 		String msg = "What was supposed to be the command is not a valid one. `" + repr + "`";
-		throw new MissingSubCommandException (msg);
+		throw new MissingCommandException (msg);
 	}
 
 	private void handleArgs () {

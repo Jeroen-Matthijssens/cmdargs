@@ -14,9 +14,9 @@ public class SchemeBuilderComplex {
 	public CommandScheme build () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.add (new BooleanOption ("enabled"));
-		builder.add (new StringOption ("path", "p"));
-		builder.add (new StringOption ("encoding", "E"));
+		builder.addOption (new BooleanOption ("enabled"));
+		builder.addOption (new StringOption ("path", "p"));
+		builder.addOption (new StringOption ("encoding", "E"));
 		builder.addOption (verbase);
 		builder.addOption (help);
 		builder.addCommand (buildInitCommand ());
@@ -32,7 +32,7 @@ public class SchemeBuilderComplex {
 	private Command buildInitCommand () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.add (new StringOption ("repository path", "p"));
+		builder.addOption (new StringOption ("repository path", "p"));
 		builder.addOption (verbase);
 		builder.addOption (help);
 		CommandScheme initScheme = builder.buildScheme ();
@@ -44,10 +44,10 @@ public class SchemeBuilderComplex {
 	private Command buildConfigCommand () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.add (new BasicOption ("global", "g"));
-		builder.add (new BasicOption ("unset", "u"));
-		builder.add (new StringArgument ("item", 0));
-		builder.add (new StringArgument ("value", 1, false));
+		builder.addOption (new BasicOption ("global", "g"));
+		builder.addOption (new BasicOption ("unset", "u"));
+		builder.addArgument (new StringArgument ("item", 0));
+		builder.addArgument (new StringArgument ("value", 1, false));
 		CommandScheme configScheme = builder.buildScheme ();
 		Command config = new CommandImpl ("config", configScheme);
 
@@ -71,13 +71,13 @@ public class SchemeBuilderComplex {
 		builder.reset ();
 
 		builder.addOption (help);
-		builder.add (new StringArgument ("index", 0, false));
+		builder.addArgument (new StringArgument ("index", 0, false));
 		CommandScheme peekScheme = builder.buildScheme ();
 		Command peek = new CommandImpl ("peek", peekScheme);
 
 		builder.reset ();
 
-		builder.add (new BasicOption ("human readable", "H"));
+		builder.addOption (new BasicOption ("human readable", "H"));
 		builder.addOption (help);
 		builder.addCommand (buildCreateCommand ());
 		builder.addCommand (push);
@@ -93,15 +93,15 @@ public class SchemeBuilderComplex {
 	private Command buildMapCommand () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.add (new StringOption ("key", "k", true));
-		builder.add (new StringOption ("value", "v", true));
+		builder.addOption (new StringOption ("key", "k", true));
+		builder.addOption (new StringOption ("value", "v", true));
 		builder.addOption (help);
 		CommandScheme putScheme = builder.buildScheme ();
 		Command put = new CommandImpl ("push", putScheme);
 
 		builder.reset ();
 
-		builder.add (new StringOption ("key", "k"));
+		builder.addOption (new StringOption ("key", "k"));
 		builder.addOption (help);
 		CommandScheme unsetScheme = builder.buildScheme ();
 		Command unset = new CommandImpl ("unset", unsetScheme);
@@ -123,10 +123,10 @@ public class SchemeBuilderComplex {
 	private Command buildShowCommand () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.add (new BasicOption ("all", "a"));
-		builder.add (new BooleanOption ("human readable", "H"));
-		builder.add (new BasicOption ("paginated"));
-		builder.add (new NumberOption ("page size"));
+		builder.addOption (new BasicOption ("all", "a"));
+		builder.addOption (new BooleanOption ("human readable", "H"));
+		builder.addOption (new BasicOption ("paginated"));
+		builder.addOption (new NumberOption ("page size"));
 		builder.addOption (verbase);
 		builder.addOption (help);
 		CommandScheme showScheme = builder.buildScheme ();
@@ -140,9 +140,9 @@ public class SchemeBuilderComplex {
 	private Command buildCreateCommand () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.add (new StringOption ("template", "p"));
-		builder.add (new StringOption ("layout", "l"));
-		builder.add (new BooleanOption ("interactive", "i"));
+		builder.addOption (new StringOption ("template", "p"));
+		builder.addOption (new StringOption ("layout", "l"));
+		builder.addOption (new BooleanOption ("interactive", "i"));
 		builder.addOption (verbase);
 		builder.addOption (help);
 		CommandScheme createScheme = builder.buildScheme ();
@@ -154,9 +154,8 @@ public class SchemeBuilderComplex {
 	private Command buildDeleteCommand () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.add (new BasicOption ("force", "f"));
-		// builder.add (new BasicOption ("force", "f"));
-		builder.add (new BooleanOption ("interactive", "i"));
+		builder.addOption (new BasicOption ("force", "f"));
+		builder.addOption (new BooleanOption ("interactive", "i"));
 		builder.addOption (verbase);
 		builder.addOption (help);
 		CommandScheme deleteScheme = builder.buildScheme ();

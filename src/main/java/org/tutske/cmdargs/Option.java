@@ -3,6 +3,10 @@ package org.tutske.cmdargs;
 
 public interface Option {
 
+	public static enum Requirement {
+		RequireNone, RequirePresence, RequireValue;
+	}
+
 	public String getRepresentation ();
 	public String getDescription ();
 	public boolean hasShortRepresentation ();

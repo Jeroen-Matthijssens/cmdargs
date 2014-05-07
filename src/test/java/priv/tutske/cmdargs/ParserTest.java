@@ -19,28 +19,28 @@ public class ParserTest {
 	public void setup () {
 		schemeBuilder = new CommandSchemeBuilderImpl ();
 
-		schemeBuilder.add (new BooleanOption ("enabled"));
-		schemeBuilder.add (new StringOption ("path", "p"));
-		schemeBuilder.add (new BasicOption ("help", "h"));
+		schemeBuilder.addOption (new BooleanOption ("enabled"));
+		schemeBuilder.addOption (new StringOption ("path", "p"));
+		schemeBuilder.addOption (new BasicOption ("help", "h"));
 		CommandScheme createScheme = schemeBuilder.buildScheme ();
 		Command create = new CommandImpl ("create", createScheme);
 
 		schemeBuilder.reset ();
 
-		schemeBuilder.add (new BasicOption ("verbose", "v"));
-		schemeBuilder.add (new BasicOption ("human readable", "H"));
-		schemeBuilder.add (new BasicOption ("help", "h"));
+		schemeBuilder.addOption (new BasicOption ("verbose", "v"));
+		schemeBuilder.addOption (new BasicOption ("human readable", "H"));
+		schemeBuilder.addOption (new BasicOption ("help", "h"));
 		CommandScheme listScheme = schemeBuilder.buildScheme ();
 		Command list = new CommandImpl ("list", listScheme);
 
 		schemeBuilder.reset ();
 
-		schemeBuilder.add (new BasicOption ("working directory", "w"));
-		schemeBuilder.add (new StringOption ("layout", "l"));
-		schemeBuilder.add (new StringOption ("root", "r"));
-		schemeBuilder.add (new BasicOption ("help", "h"));
-		schemeBuilder.add (create);
-		schemeBuilder.add (list);
+		schemeBuilder.addOption (new BasicOption ("working directory", "w"));
+		schemeBuilder.addOption (new StringOption ("layout", "l"));
+		schemeBuilder.addOption (new StringOption ("root", "r"));
+		schemeBuilder.addOption (new BasicOption ("help", "h"));
+		schemeBuilder.addCommand (create);
+		schemeBuilder.addCommand (list);
 		CommandScheme cmdscheme = schemeBuilder.buildScheme ();
 
 		parser = new ParserImpl (cmdscheme);
@@ -111,7 +111,7 @@ public class ParserTest {
 		assertThat (subparsed.hasOption (help), is (true));
 	}
 
-	@Test (expected = MissingSubCommandException.class)
+	@Test (expected = MissingCommandException.class)
 	public void it_should_complain_about_missing_subcommand ()
 	throws CommandLineException {
 		String [] args = {"--layout=simple", "-r", "create"};
