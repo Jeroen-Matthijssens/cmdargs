@@ -224,7 +224,7 @@ Using the options wrongly will produce useful outputs.
 
 ```java
 $ java -jar command.jar --print
-Error: missing required argument `--message`!
+Error: missing required option `--message`!
 $ java -jar command.jar --message
 Error: missing value for `--message`!
 ```
