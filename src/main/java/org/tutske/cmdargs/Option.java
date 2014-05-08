@@ -13,6 +13,6 @@ public interface Option {
 	public String getShortRepresentation ();
 
 	public boolean matches (String representation);
-	public boolean isRequired ();
+	public boolean hasRequirement (Requirement requirement);
 
 }

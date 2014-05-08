@@ -1,6 +1,10 @@
 package priv.tutske.cmdargs;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.tutske.cmdargs.Option;
+import org.tutske.cmdargs.Option.Requirement;
 import org.tutske.cmdargs.exceptions.RepresentationException;
 
 
@@ -8,23 +12,23 @@ public abstract class BareOption {
 
 	protected String longRepr;
 	protected String shortRepr;
-	protected boolean required;
+	protected Set<Requirement> requirements;
 
 	/* constructors */
 
 	public BareOption (String longRepr) {
-		this (longRepr, false);
+		this (longRepr, Requirement.RequireNone);
 	}
 
-	public BareOption (String longRepr, boolean required){
-		this (longRepr, null, required);
+	public BareOption (String longRepr, Requirement requirement){
+		this (longRepr, null, requirement);
 	}
 
 	public BareOption (String longRepr, String shortRepr) {
-		this (longRepr, shortRepr, false);
+		this (longRepr, shortRepr, Requirement.RequireNone);
 	}
 
-	public BareOption (String longRepr, String shortRepr, boolean required) {
+	public BareOption (String longRepr, String shortRepr, Requirement requirement) {
 		longRepr = new ReprNormalizer (longRepr).getLong ();
 
 		ReprNormalizer normalizer = new ReprNormalizer (shortRepr);
@@ -32,7 +36,7 @@ public abstract class BareOption {
 
 		this.longRepr = longRepr;
 		this.shortRepr = normalizer.getShort ();
-		this.required = required;
+		this.requirements = EnumSet.of (requirement);
 	}
 
 	/* partial implementation for options */
@@ -43,8 +47,8 @@ public abstract class BareOption {
 		return normalizer.getLong ().equals (getRepresentation ());
 	}
 
-	public boolean isRequired () {
-		return required;
+	public boolean hasRequirement (Requirement requirement) {
+		return requirements.contains (requirement);
 	}
 
 	public String getRepresentation () {

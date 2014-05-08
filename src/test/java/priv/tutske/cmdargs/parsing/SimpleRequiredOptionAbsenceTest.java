@@ -43,7 +43,6 @@ public class SimpleRequiredOptionAbsenceTest {
 		parser = new ParserImpl (scheme);
 	}
 
-	@Ignore ("Not implemented yet.")
 	@Test (expected = CommandLineException.class)
 	public void it_should_complain_about_missing_required_option () {
 		parser.parse (args);

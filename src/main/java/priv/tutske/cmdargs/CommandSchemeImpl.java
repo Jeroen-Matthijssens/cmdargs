@@ -1,10 +1,9 @@
 package priv.tutske.cmdargs;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.MissingResourceException;
+import java.util.*;
 
 import org.tutske.cmdargs.*;
+import org.tutske.cmdargs.Option.Requirement;
 
 public class CommandSchemeImpl implements CommandScheme {
 
@@ -129,6 +128,16 @@ public class CommandSchemeImpl implements CommandScheme {
 	public List<Argument<?>> getArguments () {
 		if ( arguments == null ) { return new ArrayList<Argument<?>> (); }
 		return arguments;
+	}
+
+	@Override
+	public Set<Option> getByRequirement (Requirement requirement) {
+		Set<Option> matching = new TreeSet<Option> ();
+		for ( Option option : options ) {
+			if ( option.hasRequirement (requirement) ) { continue; }
+			matching.add (option);
+		}
+		return matching;
 	}
 
 	/* -- privates -- */

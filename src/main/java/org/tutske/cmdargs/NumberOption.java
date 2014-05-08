@@ -11,16 +11,16 @@ public class NumberOption extends BareValueOption implements ValueOption<Long> {
 		super (longRepr);
 	}
 
-	public NumberOption (String longRepr, boolean required){
-		super (longRepr, required);
+	public NumberOption (String longRepr, Requirement requirement){
+		super (longRepr, requirement);
 	}
 
 	public NumberOption (String longRepr, String shortRepr) {
 		super (longRepr, shortRepr);
 	}
 
-	public NumberOption (String longRepr, String shortRepr, boolean required) {
-		super (longRepr, shortRepr, required);
+	public NumberOption (String longRepr, String shortRepr, Requirement requirement) {
+		super (longRepr, shortRepr, requirement);
 	}
 
 	@Override

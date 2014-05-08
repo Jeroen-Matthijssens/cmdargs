@@ -3,9 +3,11 @@ package priv.tutske.cmdargs;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.tutske.cmdargs.Option.Requirement.*;
 
 import org.junit.Test;
 import org.tutske.cmdargs.*;
+import org.tutske.cmdargs.Option.Requirement;
 import org.tutske.cmdargs.exceptions.CommandLineException;
 
 
@@ -52,14 +54,14 @@ public class ValueOptionTest {
 
 	@Test
 	public void it_should_know_when_it_is_required () {
-		Option required = new StringOption ("long option", true);
-		assertThat (required.isRequired (), is (true));
+		Option required = new StringOption ("long option", RequirePresence);
+		assertThat (required.hasRequirement (RequirePresence), is (true));
 
-		Option optional = new StringOption ("long option", false);
-		assertThat (optional.isRequired (), is (false));
+		Option optional = new StringOption ("long option", RequireNone);
+		assertThat (optional.hasRequirement (RequirePresence), is (false));
 
 		Option standard = new StringOption ("long option");
-		assertThat (standard.isRequired (), is (false));
+		assertThat (standard.hasRequirement (RequirePresence), is (false));
 	}
 
 	@Test

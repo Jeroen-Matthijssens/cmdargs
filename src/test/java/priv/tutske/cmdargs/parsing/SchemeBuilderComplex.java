@@ -1,5 +1,7 @@
 package priv.tutske.cmdargs.parsing;
 
+import static org.tutske.cmdargs.Option.Requirement.*;
+
 import org.tutske.cmdargs.*;
 
 import priv.tutske.cmdargs.CommandImpl;
@@ -93,8 +95,8 @@ public class SchemeBuilderComplex {
 	private Command buildMapCommand () {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
-		builder.addOption (new StringOption ("key", "k", true));
-		builder.addOption (new StringOption ("value", "v", true));
+		builder.addOption (new StringOption ("key", "k", RequirePresence));
+		builder.addOption (new StringOption ("value", "v", RequirePresence));
 		builder.addOption (help);
 		CommandScheme putScheme = builder.buildScheme ();
 		Command put = new CommandImpl ("push", putScheme);

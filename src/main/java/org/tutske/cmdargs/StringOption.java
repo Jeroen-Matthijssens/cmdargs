@@ -12,16 +12,16 @@ public class StringOption extends BareValueOption implements ValueOption<String>
 		super (longRepr);
 	}
 
-	public StringOption (String longRepr, boolean required){
-		super (longRepr, required);
+	public StringOption (String longRepr, Requirement requirement){
+		super (longRepr, requirement);
 	}
 
 	public StringOption (String longRepr, String shortRepr) {
 		super (longRepr, shortRepr);
 	}
 
-	public StringOption (String longRepr, String shortRepr, boolean required) {
-		super (longRepr, shortRepr, required);
+	public StringOption (String longRepr, String shortRepr, Requirement requirement) {
+		super (longRepr, shortRepr, requirement);
 	}
 
 	/* implementing ValueOption interface */

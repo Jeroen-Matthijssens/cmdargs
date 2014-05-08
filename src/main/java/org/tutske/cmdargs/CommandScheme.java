@@ -1,6 +1,9 @@
 package org.tutske.cmdargs;
 
 import java.util.List;
+import java.util.Set;
+
+import org.tutske.cmdargs.Option.Requirement;
 
 
 public interface CommandScheme {
@@ -20,5 +23,7 @@ public interface CommandScheme {
 	public boolean hasArgument (String argument);
 	public Argument<?> getArgument (String representation);
 	public List<Argument<?>> getArguments ();
+
+	public Set<Option> getByRequirement (Requirement requirement);
 
 }

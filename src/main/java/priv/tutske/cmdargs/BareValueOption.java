@@ -1,6 +1,7 @@
 package priv.tutske.cmdargs;
 
 import org.tutske.cmdargs.Option;
+import org.tutske.cmdargs.Option.Requirement;
 
 
 public class BareValueOption extends BareOption {
@@ -11,16 +12,16 @@ public class BareValueOption extends BareOption {
 		super (longRepr);
 	}
 
-	public BareValueOption (String longRepr, boolean required){
-		super (longRepr, required);
+	public BareValueOption (String longRepr, Requirement requirement){
+		super (longRepr, requirement);
 	}
 
 	public BareValueOption (String longRepr, String shortRepr) {
 		super (longRepr, shortRepr);
 	}
 
-	public BareValueOption (String longRepr, String shortRepr, boolean required) {
-		super (longRepr, shortRepr, required);
+	public BareValueOption (String longRepr, String shortRepr, Requirement requirement) {
+		super (longRepr, shortRepr, requirement);
 	}
 
 	/* implementing options interface */

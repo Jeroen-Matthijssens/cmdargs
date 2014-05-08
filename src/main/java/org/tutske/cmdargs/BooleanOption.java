@@ -11,16 +11,16 @@ public class BooleanOption extends BareOption implements ValueOption<Boolean> {
 		super (longRepr);
 	}
 
-	public BooleanOption (String longRepr, boolean required){
-		super (longRepr, required);
+	public BooleanOption (String longRepr, Requirement requirement) {
+		super (longRepr, requirement);
 	}
 
 	public BooleanOption (String longRepr, String shortRepr) {
 		super (longRepr, shortRepr);
 	}
 
-	public BooleanOption (String longRepr, String shortRepr, boolean required) {
-		super (longRepr, shortRepr, required);
+	public BooleanOption (String longRepr, String shortRepr, Requirement requirement) {
+		super (longRepr, shortRepr, requirement);
 	}
 
 	/* implement remaining parts of the Option interface */
