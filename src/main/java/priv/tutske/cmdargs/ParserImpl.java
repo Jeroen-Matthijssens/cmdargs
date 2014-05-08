@@ -61,36 +61,7 @@ public class ParserImpl implements Parser {
 
 	private void process () {
 		kickOff ();
-		validate ();
-	}
-
-	private void validate () {
-		validatePresence ();
-		validateValuePresence ();
-	}
-
-	private void validatePresence () {
-		Set<Option> tovalidate = scheme.getByRequirement (RequirePresence);
-		for ( Option option : tovalidate ) {
-			if ( cmdParsed.hasOption (option) ) {  continue; }
-			throw new MissingOptionException (option);
-		}
-	}
-
-	private void validateValuePresence () {
-		Set<Option> tovalidate = scheme.getByRequirement (RequireValue);
-		for ( Option option : tovalidate ) {
-			if ( ! cmdParsed.hasOption (option) ) {
-				throw new MissingOptionException (option);
-			}
-			if ( ! (option instanceof ValueOption) ) {
-				throw new RuntimeException ();
-			}
-			ValueOption<Object> valueOption = (ValueOption<Object>) option;
-			if ( cmdParsed.getOptionValue (valueOption) == null ) {
-				throw new OptionValueException (option, null);
-			}
-		}
+		new ParsedCommandValidator (cmdParsed, scheme).validate ();
 	}
 
 	private void kickOff () {
@@ -131,32 +102,32 @@ public class ParserImpl implements Parser {
 			addOption (parsed[0], null);
 			return;
 		}
+
 		String [] values = parsed [1].split (",");
-		for ( String value : values ) {
-			addOption (parsed[0], value);
-		}
+		for ( String value : values ) { addOption (parsed[0], value); }
 	}
 
-	private void handleShortOption ()
-	throws CommandLineException {
+	private void handleShortOption () {
 		String repr = tokens.consume ();
+		if ( repr.length () > 2 ) { handleShortSequence (repr); }
+		else { handleSingleShortOption (repr); }
+	}
 
-		// check for possible value after this option.
-		if ( repr.length () == 2 ) {
-			repr = repr.substring (1);
-			if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
-
-			if ( ! canConsumeValue (repr) ) { addOption (repr, null); }
-			else { addOption (repr, tokens.consume ()); }
-			return;
-		}
-
-		// go over every char and try to add the option.
-		for (int i = 1; i < repr.length (); i++) {
-			String s = repr.substring (i, i+1);
+	private void handleShortSequence (String sequence) {
+		for (int i = 1; i < sequence.length (); i++) {
+			String s = sequence.substring (i, i+1);
 			if ( ! scheme.hasOption (s) ) { throw new UnknownOptionException (s); }
 			cmdParsed.add (scheme.getOption (s));
 		}
+	}
+
+	public void handleSingleShortOption (String repr) {
+		repr = repr.substring (1);
+		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
+
+		if ( ! canConsumeValue (repr) ) { addOption (repr, null); }
+		else { addOption (repr, tokens.consume ()); }
+		return;
 	}
 
 	private boolean canConsumeValue (String repr) {
@@ -164,7 +135,31 @@ public class ParserImpl implements Parser {
 			&& tokens.typeOfNext () == ArgsTokens.TokenType.NONE;
 	}
 
-	private Command handleCommand () throws MissingCommandException {
+	private void addOption (String repr, String value) throws CommandLineException {
+		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
+		Option option = scheme.getOption (repr);
+
+		if ( ! (option instanceof ValueOption) ) {
+			cmdParsed.add (option);
+			return;
+		}
+
+		@SuppressWarnings("unchecked")
+		ValueOption<Object> valueOption = (ValueOption<Object>) option;
+
+		Validator<Object> validator = valueOption.getValidator (repr);
+		Object realval;
+		if ( value == null && validator.hasDefault () ) {
+			realval = validator.defaultValue ();
+		} else if ( validator.isValid (value) ) {
+			realval = validator.parse (value);
+		} else {
+			throw new OptionValueException (option, value);
+		}
+		cmdParsed.add (valueOption, realval);
+	}
+
+	private Command handleCommand () {
 		if ( tokens.atEnd () ) { throw new MissingCommandException (); }
 
 		String repr = tokens.consume ();
@@ -200,30 +195,6 @@ public class ParserImpl implements Parser {
 			Object value = validator.parse (valuestring);
 			cmdParsed.addArgument (argument, value);
 		}
-	}
-
-	private void addOption (String repr, String value) throws CommandLineException {
-		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
-		Option option = scheme.getOption (repr);
-
-		if ( ! (option instanceof ValueOption) ) {
-			cmdParsed.add (option);
-			return;
-		}
-
-		@SuppressWarnings("unchecked")
-		ValueOption<Object> valueOption = (ValueOption<Object>) option;
-
-		Validator<Object> validator = valueOption.getValidator (repr);
-		Object realval;
-		if ( value == null && validator.hasDefault () ) {
-			realval = validator.defaultValue ();
-		} else if ( validator.isValid (value) ) {
-			realval = validator.parse (value);
-		} else {
-			throw new OptionValueException (option, value);
-		}
-		cmdParsed.add (valueOption, realval);
 	}
 
 }
