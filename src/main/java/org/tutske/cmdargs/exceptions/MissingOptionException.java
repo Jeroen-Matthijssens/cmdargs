@@ -6,7 +6,7 @@ import org.tutske.cmdargs.*;
 public class MissingOptionException extends CommandLineException {
 
 	private static final long serialVersionUID = 1L;
-	public static final String tpl = "Error: missing option `%s`!";
+	public static final String tpl = "Error: missing required option `%s`!";
 
 	public MissingOptionException () { super (); }
 	public MissingOptionException (String msg) { super (msg); }
@@ -18,7 +18,7 @@ public class MissingOptionException extends CommandLineException {
 	}
 
 	public static String constructMessage (Option option) {
-		return String.format (tpl, option.toString ());
+		return String.format (tpl, option.getRepresentation ());
 	}
 
 }
