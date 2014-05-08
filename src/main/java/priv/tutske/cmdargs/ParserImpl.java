@@ -2,12 +2,16 @@ package priv.tutske.cmdargs;
 
 import java.util.List;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
 
 public class ParserImpl implements Parser {
 
+	private CommandLineException exception;
 	private ParsedCommandImpl cmdParsed;
 	private CommandScheme scheme;
 	private ArgsTokens tokens;
@@ -26,17 +30,33 @@ public class ParserImpl implements Parser {
 	/* public methods */
 
 	@Override
-	public ParsedCommand parse (String [] args) throws CommandLineException {
-		return parse (new ArgsTokens (args));
+	public ParsedCommand parse (String [] args) {
+		try { return parse (new ArgsTokens (args)); }
+		catch (CommandLineException e) { this.exception = e; }
+		throw exception;
 	}
 
-	public ParsedCommand parse (ArgsTokens tokens) {
+	@Override
+	public void printError () {
+		printError (System.out);
+	}
+
+	@Override
+	public void printError (OutputStream stream) {
+		printError (new PrintStream (stream));
+	}
+
+	/* private utility functions */
+
+	private void printError (PrintStream writer) {
+		writer.println (exception.getMessage ());
+	}
+
+	private ParsedCommand parse (ArgsTokens tokens) {
 		this.tokens = tokens;
 		kickOff ();
 		return cmdParsed;
 	}
-
-	/* private utility functions */
 
 	private void kickOff () throws CommandLineException {
 		boolean broken = false;
@@ -125,7 +145,7 @@ public class ParserImpl implements Parser {
 			if ( tokens.atEnd () && argument.isRequired () ) {
 				String tpl = "Could not find required argument: %s";
 				String msg = String.format (tpl, argument.toString ());
-				throw new WrongValueException (msg);
+				throw new ArgumentValueException (msg);
 			}
 
 			if ( tokens.atEnd () ) { break; }
@@ -136,7 +156,7 @@ public class ParserImpl implements Parser {
 			if ( ! validator.isValid (valuestring) && argument.isRequired () ) {
 				String tpl = "Could not parse required argument: %s `%s`";
 				String msg = String.format (tpl, argument.toString (), valuestring);
-				throw new WrongValueException (msg);
+				throw new ArgumentValueException (msg);
 			}
 
 			if ( ! validator.isValid (valuestring) ) { continue; }
@@ -148,19 +168,21 @@ public class ParserImpl implements Parser {
 	}
 
 	private void addOption (String repr, String value) throws CommandLineException {
-
-		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException ("`" + repr + "`"); }
+		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
 		Option option = scheme.getOption (repr);
 
 		if ( ! (option instanceof ValueOption) ) {
 			cmdParsed.add (option);
 			return;
 		}
+
 		@SuppressWarnings("unchecked")
 		ValueOption<Object> valueOption = (ValueOption<Object>) option;
 
 		Validator<Object> validator = valueOption.getValidator (repr);
-		if ( ! validator.isValid (value) ) { throw new WrongValueException (); }
+		if ( ! validator.isValid (value) ) {
+			throw new OptionValueException (option, value);
+		}
 		cmdParsed.add (valueOption, validator.parse (value));
 	}
 

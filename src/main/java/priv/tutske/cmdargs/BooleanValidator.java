@@ -1,7 +1,6 @@
 package priv.tutske.cmdargs;
 
 import org.tutske.cmdargs.Validator;
-import org.tutske.cmdargs.exceptions.WrongValueException;
 
 
 public class BooleanValidator implements Validator<Boolean> {
@@ -38,8 +37,7 @@ public class BooleanValidator implements Validator<Boolean> {
 		if ( value.matches ("|(true)|(yes)") ) { return true; }
 		if ( value.matches ("(false)|(no)") ) { return false; }
 
-		String msg = "The value is not a boolean value (" + value + ")";
-		throw new WrongValueException (msg);
+		throw new IllegalArgumentException (value);
 	}
 
 	private String normalize (String value) {
