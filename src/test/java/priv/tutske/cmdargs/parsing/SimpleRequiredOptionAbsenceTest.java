@@ -20,19 +20,21 @@ import priv.tutske.cmdargs.ParserImpl;
 public class SimpleRequiredOptionAbsenceTest {
 
 	private String [] args;
+	private Class<?> clazz;
 	private Parser parser;
 
-	public SimpleRequiredOptionAbsenceTest (String cmd) {
+	public SimpleRequiredOptionAbsenceTest (String cmd, Class<?> clazz) {
 		this.args = cmd.split (" ");
+		this.clazz = clazz;
 	}
 
 	@Parameters (name="`{0}` is missing required value option")
 	public static Collection<Object []> arguments () {
 		return Arrays.asList (new Object [] [] {
-			{""}
-			, {"-v --two-words"}
-			, {"-H"}
-			, {"--path"} /* no value given. */
+			{"", MissingOptionException.class}
+			, {"-v --two-words", MissingOptionException.class}
+			, {"-H", MissingOptionException.class}
+			, {"--path", OptionValueException.class}
 		});
 	}
 
@@ -42,9 +44,12 @@ public class SimpleRequiredOptionAbsenceTest {
 		parser = new ParserImpl (scheme);
 	}
 
-	@Test (expected = CommandLineException.class)
+	@Test
 	public void it_should_complain_about_missing_required_option () {
-		parser.parse (args);
+		try { parser.parse (args); }
+		catch (Exception e) {
+			if ( clazz.isInstance (e) ) { return; }
+		}
 		fail ("Failed to complain about missing required option.");
 	}
 
