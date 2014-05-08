@@ -49,7 +49,8 @@ public class ParsedCommandImpl implements ParsedCommand {
 	}
 
 	@Override
-	public <T> T getOptionValue (ValueOption<T> option){
+	public <T> T getOptionValue (ValueOption<T> option) {
+		if ( ! optValues.containsKey (option) ) { return null; }
 		return (T) (optValues.get (option).get (0));
 	}
 

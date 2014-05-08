@@ -24,4 +24,14 @@ public class NumberValidator implements Validator<Long> {
 		return Long.parseLong (value);
 	}
 
+	@Override
+	public boolean hasDefault () {
+		return false;
+	}
+
+	@Override
+	public Long defaultValue () {
+		throw new RuntimeException ("no default value");
+	}
+
 }

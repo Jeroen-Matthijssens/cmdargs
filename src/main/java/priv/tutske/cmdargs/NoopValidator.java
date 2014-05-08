@@ -24,4 +24,14 @@ public class NoopValidator implements Validator<String> {
 		return value;
 	}
 
+	@Override
+	public boolean hasDefault () {
+		return false;
+	}
+
+	@Override
+	public String defaultValue () {
+		throw new RuntimeException ("no default value");
+	}
+
 }

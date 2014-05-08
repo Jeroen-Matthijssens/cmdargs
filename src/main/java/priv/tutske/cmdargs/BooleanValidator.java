@@ -31,6 +31,16 @@ public class BooleanValidator implements Validator<Boolean> {
 		else { return ! parseString (value); }
 	}
 
+	@Override
+	public boolean hasDefault () {
+		return true;
+	}
+
+	@Override
+	public Boolean defaultValue () {
+		return parse ("true");
+	}
+
 	private boolean parseString (String value) {
 		value = normalize (value);
 

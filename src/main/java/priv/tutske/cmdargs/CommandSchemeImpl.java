@@ -39,7 +39,7 @@ public class CommandSchemeImpl implements CommandScheme {
 
 	/* Constructors */
 
-	public CommandSchemeImpl () {
+	private CommandSchemeImpl () {
 		options = new ArrayList<Option> ();
 	}
 
@@ -132,9 +132,9 @@ public class CommandSchemeImpl implements CommandScheme {
 
 	@Override
 	public Set<Option> getByRequirement (Requirement requirement) {
-		Set<Option> matching = new TreeSet<Option> ();
+		Set<Option> matching = new HashSet<Option> ();
 		for ( Option option : options ) {
-			if ( option.hasRequirement (requirement) ) { continue; }
+			if ( ! option.hasRequirement (requirement) ) { continue; }
 			matching.add (option);
 		}
 		return matching;

@@ -1,6 +1,9 @@
 package priv.tutske.cmdargs;
 
+import static org.tutske.cmdargs.Option.Requirement.*;
+
 import java.util.List;
+import java.util.Set;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -31,9 +34,7 @@ public class ParserImpl implements Parser {
 
 	@Override
 	public ParsedCommand parse (String [] args) {
-		try { return parse (new ArgsTokens (args)); }
-		catch (CommandLineException e) { this.exception = e; }
-		throw exception;
+		return parse (new ArgsTokens (args));
 	}
 
 	@Override
@@ -54,11 +55,44 @@ public class ParserImpl implements Parser {
 
 	private ParsedCommand parse (ArgsTokens tokens) {
 		this.tokens = tokens;
-		kickOff ();
-		return cmdParsed;
+		try {
+			kickOff ();
+			validate ();
+			return cmdParsed;
+		} catch (CommandLineException e) { this.exception = e; }
+		throw exception;
 	}
 
-	private void kickOff () throws CommandLineException {
+	private void validate () {
+		validatePresence ();
+		validateValuePresence ();
+	}
+
+	private void validatePresence () {
+		Set<Option> tovalidate = scheme.getByRequirement (RequirePresence);
+		for ( Option option : tovalidate ) {
+			if ( cmdParsed.hasOption (option) ) {  continue; }
+			throw new MissingOptionException (option);
+		}
+	}
+
+	private void validateValuePresence () {
+		Set<Option> tovalidate = scheme.getByRequirement (RequireValue);
+		for ( Option option : tovalidate ) {
+			if ( ! cmdParsed.hasOption (option) ) {
+				throw new MissingOptionException (option);
+			}
+			if ( ! (option instanceof ValueOption) ) {
+				throw new RuntimeException ();
+			}
+			ValueOption<Object> valueOption = (ValueOption<Object>) option;
+			if ( cmdParsed.getOptionValue (valueOption) == null ) {
+				throw new OptionValueException (option, null);
+			}
+		}
+	}
+
+	private void kickOff () {
 		boolean broken = false;
 
 		glob: while (! tokens.atEnd ()) {
@@ -93,7 +127,7 @@ public class ParserImpl implements Parser {
 		String [] parsed = tokens.consume ().split ("=", 2);
 
 		if ( parsed.length == 1 ) {
-			addOption (parsed[0], "");
+			addOption (parsed[0], null);
 			return;
 		}
 		String [] values = parsed [1].split (",");
@@ -111,7 +145,7 @@ public class ParserImpl implements Parser {
 			repr = repr.substring (1);
 			if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
 
-			if ( ! canConsumeValue (repr) ) { addOption (repr, ""); }
+			if ( ! canConsumeValue (repr) ) { addOption (repr, null); }
 			else { addOption (repr, tokens.consume ()); }
 			return;
 		}
@@ -180,10 +214,15 @@ public class ParserImpl implements Parser {
 		ValueOption<Object> valueOption = (ValueOption<Object>) option;
 
 		Validator<Object> validator = valueOption.getValidator (repr);
-		if ( ! validator.isValid (value) ) {
+		Object realval;
+		if ( value == null && validator.hasDefault () ) {
+			realval = validator.defaultValue ();
+		} else if ( validator.isValid (value) ) {
+			realval = validator.parse (value);
+		} else {
 			throw new OptionValueException (option, value);
 		}
-		cmdParsed.add (valueOption, validator.parse (value));
+		cmdParsed.add (valueOption, realval);
 	}
 
 }

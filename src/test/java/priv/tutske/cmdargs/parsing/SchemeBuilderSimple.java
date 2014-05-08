@@ -49,7 +49,7 @@ public class SchemeBuilderSimple {
 		builder.addOption (new BasicOption ("verbose", "v"));
 		builder.addOption (new BasicOption ("human readable", "H"));
 		builder.addOption (new BasicOption ("two words", "t"));
-		builder.addOption (new StringOption ("path", "p", RequirePresence));
+		builder.addOption (new StringOption ("path", "p", RequireValue));
 		builder.addOption (new StringOption ("layout", "l"));
 		builder.addOption (new BooleanOption ("enabled"));
 		builder.addOption (new BooleanOption ("recursive"));

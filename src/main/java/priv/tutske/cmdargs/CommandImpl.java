@@ -11,7 +11,7 @@ public class CommandImpl implements Command {
 	/* Constructors */
 
 	public CommandImpl (String command) {
-		this (command, new CommandSchemeImpl ());
+		this (command, CommandSchemeImpl.newInstance ());
 	}
 
 	public CommandImpl (String command, CommandScheme scheme) {
