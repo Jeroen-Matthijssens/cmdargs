@@ -38,7 +38,7 @@ public class BooleanValidator implements Validator<Boolean> {
 
 	@Override
 	public Boolean defaultValue () {
-		return parse ("true");
+		return type == Type.Normal;
 	}
 
 	private boolean parseString (String value) {

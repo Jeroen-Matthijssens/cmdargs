@@ -5,8 +5,6 @@ import priv.tutske.cmdargs.BareOption;
 
 public class BasicOption extends BareOption implements Option {
 
-	/* constructors */
-
 	public BasicOption (String longRepr) {
 		super (longRepr);
 	}

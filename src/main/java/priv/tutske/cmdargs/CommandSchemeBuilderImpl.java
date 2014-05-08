@@ -8,6 +8,7 @@ import org.tutske.cmdargs.*;
 public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 
 	private static final String NOT_BOTH = "Can not have both commands and arguments";
+	private static final String EXISTS = "An option with the name as `%s` already exists";
 
 	List<Command> commands;
 	List<Option> options;
@@ -28,7 +29,8 @@ public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 		// If multiple options with the same representation are added more than once there
 		// is a problem. Abuse the fact that equals is based on the long representation.
 		if ( options.indexOf (option) > -1 ) {
-			throw new IllegalArgumentException (option.toString ());
+			String msg = String.format (EXISTS, option.toString ());
+			throw new IllegalArgumentException (msg);
 		}
 		options.add (option);
 		return this;

@@ -16,6 +16,7 @@ public class ParsedCommandImpl implements ParsedCommand {
 	private List<Argument<?>> arguments;
 	private Map<Option, List<Object>> optValues;
 	private Map<Argument<?>, Object> argValues;
+	private List<String> remainingArgs;
 
 	/* constructors */
 
@@ -56,6 +57,7 @@ public class ParsedCommandImpl implements ParsedCommand {
 
 	@Override
 	public <T> List<T> getOptionValues (ValueOption<T> option) {
+		if ( ! optValues.containsKey (option) ) { return new ArrayList<T> (); }
 		List<? extends Object> values = optValues.get (option);
 		return (List<T>) values;
 	}
@@ -67,13 +69,13 @@ public class ParsedCommandImpl implements ParsedCommand {
 
 	@Override
 	public <T> T getArgumentValue (Argument<T> argument) {
+		if ( ! argValues.containsKey (argument) ) { return null; }
 		return (T) argValues.get (argument);
 	}
 
 	@Override
-	public String [] getArgumentValues () {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getArgumentValues () {
+		return remainingArgs;
 	}
 
 	/* functions to buildup the ParsedOptions*/
@@ -94,6 +96,10 @@ public class ParsedCommandImpl implements ParsedCommand {
 	public void addArgument (Argument<?> argument, Object value) {
 		arguments.add (argument);
 		argValues.put (argument, value);
+	}
+
+	public void addArgument (String value) {
+		remainingArgs.add (value);
 	}
 
 	public void add (Option option) {

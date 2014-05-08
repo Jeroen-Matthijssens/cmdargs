@@ -16,6 +16,6 @@ public interface ParsedCommand {
 	public boolean hasArgument (Argument<?> argument);
 	public <T> T getArgumentValue (Argument<T> argument);
 
-	public String [] getArgumentValues ();
+	public List<String> getArgumentValues ();
 
 }

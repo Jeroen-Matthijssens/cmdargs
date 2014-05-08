@@ -21,21 +21,12 @@ public class ParserImpl implements Parser {
 
 	/* Constructors */
 
-	private ParserImpl () {
-		cmdParsed = new ParsedCommandImpl ();
-	}
-
 	public ParserImpl (CommandScheme scheme) {
-		this ();
+		cmdParsed = new ParsedCommandImpl ();
 		this.scheme = scheme;
 	}
 
 	/* public methods */
-
-	@Override
-	public ParsedCommand parse (String [] args) {
-		return parse (new ArgsTokens (args));
-	}
 
 	@Override
 	public void printError () {
@@ -47,6 +38,11 @@ public class ParserImpl implements Parser {
 		printError (new PrintStream (stream));
 	}
 
+	@Override
+	public ParsedCommand parse (String [] args) {
+		return parse (new ArgsTokens (args));
+	}
+
 	/* private utility functions */
 
 	private void printError (PrintStream writer) {
@@ -55,12 +51,17 @@ public class ParserImpl implements Parser {
 
 	private ParsedCommand parse (ArgsTokens tokens) {
 		this.tokens = tokens;
-		try {
-			kickOff ();
-			validate ();
-			return cmdParsed;
-		} catch (CommandLineException e) { this.exception = e; }
-		throw exception;
+
+		try { process (); }
+		catch (CommandLineException e) { this.exception = e; }
+
+		if ( this.exception != null ) { throw exception; }
+		return cmdParsed;
+	}
+
+	private void process () {
+		kickOff ();
+		validate ();
 	}
 
 	private void validate () {

@@ -1,12 +1,10 @@
 package org.tutske.cmdargs;
 
-import priv.tutske.cmdargs.BareValueOption;
+import priv.tutske.cmdargs.BareOption;
 import priv.tutske.cmdargs.NoopValidator;
 
 
-public class StringOption extends BareValueOption implements ValueOption<String> {
-
-	/* constructors */
+public class StringOption extends BareOption implements ValueOption<String> {
 
 	public StringOption (String longRepr) {
 		super (longRepr);
@@ -23,8 +21,6 @@ public class StringOption extends BareValueOption implements ValueOption<String>
 	public StringOption (String longRepr, String shortRepr, Requirement requirement) {
 		super (longRepr, shortRepr, requirement);
 	}
-
-	/* implementing ValueOption interface */
 
 	@Override
 	public Validator<String> getValidator (String longRepr) {

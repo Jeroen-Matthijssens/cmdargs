@@ -3,9 +3,7 @@ package org.tutske.cmdargs;
 import priv.tutske.cmdargs.*;
 
 
-public class NumberOption extends BareValueOption implements ValueOption<Long> {
-
-	/* constructors */
+public class NumberOption extends BareOption implements ValueOption<Long> {
 
 	public NumberOption (String longRepr) {
 		super (longRepr);
@@ -25,7 +23,6 @@ public class NumberOption extends BareValueOption implements ValueOption<Long> {
 
 	@Override
 	public Validator<Long> getValidator (String representation) {
-		// TODO Auto-generated method stub
 		return NumberValidator.newInstance ();
 	}
 

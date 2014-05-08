@@ -70,7 +70,7 @@ public class CommandSchemeImpl implements CommandScheme {
 	public Option getOption (String representation) {
 		if ( options == null ) { throw new RuntimeException (); }
 
-		for (Option option : options ) {
+		for ( Option option : options ) {
 			if ( option.matches (representation) ) { return option; }
 		}
 
@@ -80,7 +80,7 @@ public class CommandSchemeImpl implements CommandScheme {
 
 	@Override
 	public boolean hasCommand (Command command) {
-		return commands.indexOf (command) != -1;
+		return commands != null && commands.contains (command);
 	}
 
 	@Override

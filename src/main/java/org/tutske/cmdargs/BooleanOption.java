@@ -25,10 +25,7 @@ public class BooleanOption extends BareOption implements ValueOption<Boolean> {
 
 	/* implement remaining parts of the Option interface */
 
-	public boolean acceptsValue () {
-		return true;
-	}
-
+	@Override
 	public boolean matches (String option) {
 		boolean b = super.matches (option);
 		if ( b ) { return b; }

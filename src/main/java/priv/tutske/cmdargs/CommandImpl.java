@@ -5,6 +5,8 @@ import org.tutske.cmdargs.Command;
 
 public class CommandImpl implements Command {
 
+	private static final String WRONG_REPR = "The command `%s` is not valid";
+
 	private String repr;
 	private CommandScheme scheme;
 
@@ -15,13 +17,8 @@ public class CommandImpl implements Command {
 	}
 
 	public CommandImpl (String command, CommandScheme scheme) {
-		if ( command == null || command.length () == 0 ) {
-			String msg = "command can not be empty or null";
-			throw new IllegalArgumentException (msg);
-		}
-
-		if ( command.indexOf (" ") != -1 ) {
-			String msg = "Sub commands can not contain spaces.";
+		if ( command == null || ! command.matches ("[a-zA-Z]+") ) {
+			String msg = String.format (WRONG_REPR, command);
 			throw new IllegalArgumentException (msg);
 		}
 
@@ -49,7 +46,7 @@ public class CommandImpl implements Command {
 		return String.format ("<CommandImpl: %s>", getRepresentation ());
 	}
 
-	/* private utility functios */
+	/* private utility functions */
 
 	private String toStandardRepresentation (String representation) {
 		return representation.trim ().toLowerCase ();
