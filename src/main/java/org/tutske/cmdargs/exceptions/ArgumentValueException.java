@@ -6,7 +6,7 @@ import org.tutske.cmdargs.*;
 public class ArgumentValueException extends CommandLineException {
 
 	private static final long serialVersionUID = 1L;
-	private static final String tpl = "Error: value for `%s` for argument `%s is not valid!";
+	private static final String tpl = "Error: value `%s` for argument `%s is not valid!";
 
 	public ArgumentValueException () { super (); }
 	public ArgumentValueException (String msg) { super (msg); }

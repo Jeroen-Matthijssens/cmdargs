@@ -17,27 +17,28 @@ public class ParserOptionExtractor {
 	}
 
 	public void extract () {
-		glob: while (! tokens.atEnd ()) {
+		while (! tokens.atEnd ()) {
 			switch ( tokens.typeOfNext ()) {
 				case SHORT: handleShortOption (); break;
 				case LONG: handleLongOption (); break;
-				case BREAK: break glob;
-				case NONE: break glob;
-				default: break glob;
+				default: return;
 			}
 		}
 	}
 
 	private void handleLongOption () {
 		String [] parsed = tokens.consume ().split ("=", 2);
+		String repr = parsed[0];
 
-		if ( parsed.length == 1 ) {
-			addOption (parsed[0], null);
-			return;
+		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
+		Option option = scheme.getOption (repr);
+
+		if ( parsed.length == 2 ) {
+			String [] values = parsed [1].split (",");
+			for ( String value : values ) { addOption (option, repr, value); }
+		} else {
+			addOption (option, repr);
 		}
-
-		String [] values = parsed [1].split (",");
-		for ( String value : values ) { addOption (parsed[0], value); }
 	}
 
 	private void handleShortOption () {
@@ -50,17 +51,15 @@ public class ParserOptionExtractor {
 		for (int i = 1; i < sequence.length (); i++) {
 			String s = sequence.substring (i, i+1);
 			if ( ! scheme.hasOption (s) ) { throw new UnknownOptionException (s); }
-			parsed.add (scheme.getOption (s));
+			addOption (scheme.getOption (s), s);
 		}
 	}
 
 	public void handleSingleShortOption (String repr) {
-		repr = repr.substring (1);
 		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
-
-		if ( ! canConsumeValue (repr) ) { addOption (repr, null); }
-		else { addOption (repr, tokens.consume ()); }
-		return;
+		Option option = scheme.getOption (repr);
+		if ( ! canConsumeValue (repr) ) { addOption (option, repr); }
+		else { addOption (option, repr, tokens.consume ()); }
 	}
 
 	private boolean canConsumeValue (String repr) {
@@ -68,28 +67,32 @@ public class ParserOptionExtractor {
 			&& tokens.typeOfNext () == ArgsTokens.TokenType.NONE;
 	}
 
-	private void addOption (String repr, String value) throws CommandLineException {
-		if ( ! scheme.hasOption (repr) ) { throw new UnknownOptionException (repr); }
-		Option option = scheme.getOption (repr);
+	private void addOption (Option option, String repr) {
+		if ( option instanceof ValueOption ) { addWithDefault (option, repr); }
+		parsed.addOption (option);
+	}
 
+	private void addWithDefault (Option option, String repr) {
+		@SuppressWarnings("unchecked")
+		ValueOption<Object> valueOption = (ValueOption<Object>) option;
+		Validator<Object> validator = valueOption.getValidator (repr);
+
+		if ( ! validator.hasDefault () ) { parsed.addOption (option); }
+		else { parsed.addOption (valueOption, validator.defaultValue ()); }
+	}
+
+	private void addOption (Option option, String repr, String value) {
 		if ( ! (option instanceof ValueOption) ) {
-			parsed.add (option);
-			return;
+			throw new OptionValueException (option, value);
 		}
 
 		@SuppressWarnings("unchecked")
 		ValueOption<Object> valueOption = (ValueOption<Object>) option;
 
 		Validator<Object> validator = valueOption.getValidator (repr);
-		Object realval;
-		if ( value == null && validator.hasDefault () ) {
-			realval = validator.defaultValue ();
-		} else if ( validator.isValid (value) ) {
-			realval = validator.parse (value);
-		} else {
-			throw new OptionValueException (option, value);
-		}
-		parsed.add (valueOption, realval);
+		boolean valid = validator.isValid (value);
+		if ( ! valid ) { throw new OptionValueException (option, value); }
+		parsed.addOption (valueOption, validator.parse (value));
 	}
 
 }

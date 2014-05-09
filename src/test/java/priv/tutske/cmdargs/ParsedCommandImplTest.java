@@ -22,7 +22,7 @@ public class ParsedCommandImplTest {
 	public void it_should_find_the_value_with_the_option () {
 		ValueOption<String> option = new StringOption ("name", "n");
 		String value = "The Value";
-		parsed.add (option, value);
+		parsed.addOption (option, value);
 
 		assertThat (parsed.hasOption (option), is (true));
 		assertThat (parsed.getOptionValue (option), is (value));
@@ -32,7 +32,7 @@ public class ParsedCommandImplTest {
 	public void it_should_find_the_option_with_new_created_option () {
 		ValueOption<String> name = new StringOption ("name", "n");
 		String value = "The Value";
-		parsed.add (name, value);
+		parsed.addOption (name, value);
 
 		Option newname = new BasicOption ("name");
 		assertThat (parsed.hasOption (newname), is (true));
@@ -42,7 +42,7 @@ public class ParsedCommandImplTest {
 	public void it_should_find_the_value_with_new_created_option () {
 		ValueOption<String> name = new StringOption ("name", "n");
 		String value = "The Value";
-		parsed.add (name, value);
+		parsed.addOption (name, value);
 
 		ValueOption<String> newname = new StringOption ("name");
 		assertThat (parsed.hasOption (newname), is (true));

@@ -80,7 +80,7 @@ public class ParsedCommandImpl implements ParsedCommand {
 
 	/* functions to buildup the ParsedOptions*/
 
-	public <T> void add (ValueOption<T> option, T value) {
+	public <T> void addOption (ValueOption<T> option, T value) {
 		if ( ! optValues.containsKey (option) ) {
 			optValues.put (option, new ArrayList<Object> ());
 		}
@@ -88,9 +88,8 @@ public class ParsedCommandImpl implements ParsedCommand {
 		optValues.get (option).add (value);
 	}
 
-	public <T> void add (Argument<T> argument, T value) {
-		arguments.add (argument);
-		argValues.put (argument, value);
+	public void addOption (Option option) {
+		options.add (option);
 	}
 
 	public void addArgument (Argument<?> argument, Object value) {
@@ -100,10 +99,6 @@ public class ParsedCommandImpl implements ParsedCommand {
 
 	public void addArgument (String value) {
 		remainingArgs.add (value);
-	}
-
-	public void add (Option option) {
-		options.add (option);
 	}
 
 	public void setCommand (Command command) {

@@ -1,7 +1,5 @@
 package priv.tutske.cmdargs;
 
-import static priv.tutske.cmdargs.ArgsTokens.TokenType.*;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -12,14 +10,14 @@ import org.tutske.cmdargs.exceptions.*;
 public class ParserImpl implements Parser {
 
 	private CommandLineException exception;
-	private ParsedCommandImpl cmdParsed;
+	private ParsedCommandImpl parsed;
 	private CommandScheme scheme;
 	private ArgsTokens tokens;
 
 	/* Constructors */
 
 	public ParserImpl (CommandScheme scheme) {
-		cmdParsed = new ParsedCommandImpl ();
+		parsed = new ParsedCommandImpl ();
 		this.scheme = scheme;
 	}
 
@@ -51,33 +49,24 @@ public class ParserImpl implements Parser {
 
 		try { process (); }
 		catch (CommandLineException e) { this.exception = e; }
-		new ParsedCommandValidator (cmdParsed, scheme).validate ();
 
 		if ( this.exception != null ) { throw exception; }
-		return cmdParsed;
+		return parsed;
 	}
 
 	private void process () {
-		new ParserOptionExtractor (scheme, cmdParsed, tokens).extract ();
+		new ParserOptionExtractor (scheme, parsed, tokens).extract ();
 
-		boolean broken = ! tokens.atEnd () && tokens.typeOfNext ().equals (BREAK);
-		if ( broken ) { tokens.skip (); }
-
-		if ( (tokens.atEnd () || broken) && scheme.hasCommands () ) {
-			throw new MissingCommandException ();
+		if ( scheme.hasCommands () ) {
+			new ParserCommandExtractor (scheme, parsed, tokens).extract ();
+			Command command = parsed.getCommand ();
+			ParserImpl parser = new ParserImpl (command.getCommandScheme ());
+			parsed.setParsed (parser.parse (tokens));
+		} else if ( ! tokens.atEnd () ) {
+			new ParserArgumentExtractor (scheme, parsed, tokens).extract ();
 		}
 
-		if ( tokens.atEnd () ) { return; }
-
-		if ( broken || ! scheme.hasCommands () ) {
-			new ParserArgumentExtractor (scheme, cmdParsed, tokens).extract ();
-			return;
-		}
-
-		new ParserCommandExtractor (scheme, cmdParsed, tokens).extract ();
-		Command command = cmdParsed.getCommand ();
-		ParserImpl parser = new ParserImpl (command.getCommandScheme ());
-		cmdParsed.setParsed (parser.parse (tokens));
+		new ParsedCommandValidator (parsed, scheme).validate ();
 	}
 
 }

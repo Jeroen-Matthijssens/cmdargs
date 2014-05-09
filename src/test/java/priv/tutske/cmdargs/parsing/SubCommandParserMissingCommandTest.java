@@ -1,6 +1,8 @@
 package priv.tutske.cmdargs.parsing;
 
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
 
 import java.util.Collection;
 import java.util.Arrays;
@@ -10,9 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
+
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
-
 import priv.tutske.cmdargs.ParserImpl;
 import priv.tutske.cmdargs.CommandImpl;
 import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
@@ -22,22 +24,24 @@ import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
 public class SubCommandParserMissingCommandTest {
 
 	private String [] args;
+	private Class<?> clazz;
 	private Parser parser;
 
-	public SubCommandParserMissingCommandTest (String cmd) {
+	public SubCommandParserMissingCommandTest (String cmd, Class<?> clazz) {
 		this.args = cmd.split (" ");
+		this.clazz = clazz;
 	}
 
 	@Parameters (name = "`{0}` is missing one of the sub commands 'list' or 'create'")
 	public static Collection<Object []> arguments () {
 		return Arrays.asList (new Object [] [] {
-			{""}
-			, {"--enabled"}
-			, {"-p create"}
-			, {"-p list"}
-			, {"--path=create update"}
-			, {"-p create --enabled"}
-			, {"-p path/to/file -- create other but not --enabled"}
+			{"", MissingCommandException.class}
+			, {"--enabled", MissingCommandException.class}
+			, {"-p create", MissingCommandException.class}
+			, {"-p list", MissingCommandException.class}
+			, {"--path=create update", CommandMismatchException.class}
+			, {"-p create --enabled", MissingCommandException.class}
+			, {"-p path/to/file -- create other but not --enabled", MissingCommandException.class}
 		});
 	}
 
@@ -74,11 +78,15 @@ public class SubCommandParserMissingCommandTest {
 		parser = new ParserImpl (cmdscheme);
 	}
 
-	@Test (expected = MissingCommandException.class)
+	@Test
 	public void it_should_complain_about_missing_subcommand ()
 	throws CommandLineException {
-		parser.parse (args);
-		fail ("When a subcommand is possible, a subcommand must always be used.");
+		try { parser.parse (args); }
+		catch (Exception e) {
+			assertThat (e, instanceOf (clazz));
+			return;
+		}
+		fail ("Failed to complain about missing or wrong command!");
 	}
 
 }

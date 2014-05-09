@@ -22,7 +22,7 @@ public class ArgsTokens {
 
 	public TokenType typeOfNext () {
 		String token = peek ();
-		if ( "--".equals (token) ) { return TokenType.BREAK; }
+		if ( "--".equals (token) || "".equals (token) ) { return TokenType.BREAK; }
 		else if ( token.startsWith ("--") ) { return TokenType.LONG; }
 		else if (token.startsWith ("-") ) { return TokenType.SHORT; }
 		else { return TokenType.NONE; }

@@ -1,6 +1,8 @@
 package priv.tutske.cmdargs.parsing;
 
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
 
 import java.util.Collection;
 import java.util.Arrays;
@@ -48,9 +50,10 @@ public class SimpleRequiredOptionAbsenceTest {
 	public void it_should_complain_about_missing_required_option () {
 		try { parser.parse (args); }
 		catch (Exception e) {
-			if ( clazz.isInstance (e) ) { return; }
+			assertThat (e, instanceOf (clazz));
+			return;
 		}
-		fail ("Failed to complain about missing required option.");
+		fail ("Failed to complain about missing required option!");
 	}
 
 }

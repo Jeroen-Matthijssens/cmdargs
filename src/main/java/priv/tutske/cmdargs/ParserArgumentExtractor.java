@@ -21,27 +21,17 @@ public class ParserArgumentExtractor {
 	public void extract () {
 		List<Argument<?>> arguments = scheme.getArguments ();
 		for ( Argument<?> argument : arguments ) {
-			if ( tokens.atEnd () && argument.isRequired () ) {
-				String tpl = "Could not find required argument: %s";
-				String msg = String.format (tpl, argument.toString ());
-				throw new ArgumentValueException (msg);
-			}
-
-			if ( tokens.atEnd () ) { break; }
+			if ( tokens.atEnd () && ! argument.isRequired () ) { return; }
+			if ( tokens.atEnd () ) { throw new MissingArgumentException (argument); }
 
 			Validator<?> validator = argument.getValidator ();
 			String valuestring = tokens.peek ();
+			boolean valid = validator.isValid (valuestring);
 
-			if ( ! validator.isValid (valuestring) && argument.isRequired () ) {
-				String tpl = "Could not parse required argument: %s `%s`";
-				String msg = String.format (tpl, argument.toString (), valuestring);
-				throw new ArgumentValueException (msg);
-			}
+			if ( ! valid && ! argument.isRequired () ) { continue; }
+			if ( ! valid ) { throw new ArgumentValueException (argument, valuestring); }
 
-			if ( ! validator.isValid (valuestring) ) { continue; }
-
-			if ( ! tokens.atEnd () ) { tokens.consume (); }
-			Object value = validator.parse (valuestring);
+			Object value = validator.parse (tokens.consume ());
 			parsed.addArgument (argument, value);
 		}
 	}

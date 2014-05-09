@@ -1,13 +1,12 @@
 package priv.tutske.cmdargs;
 
-import org.tutske.cmdargs.Command;
-import org.tutske.cmdargs.CommandScheme;
-import org.tutske.cmdargs.exceptions.MissingCommandException;
+import static priv.tutske.cmdargs.ArgsTokens.TokenType.*;
+
+import org.tutske.cmdargs.*;
+import org.tutske.cmdargs.exceptions.*;
 
 
 public class ParserCommandExtractor {
-
-	private static final String NOT_VALID = "Expected commad but found `%s`";
 
 	private CommandScheme scheme;
 	private ParsedCommandImpl parsed;
@@ -20,16 +19,17 @@ public class ParserCommandExtractor {
 	}
 
 	public void extract () {
-		if ( tokens.atEnd () ) { throw new MissingCommandException (); }
+		if ( cannotFindPossibleCandidate () ) { throw new MissingCommandException (); }
 
 		String repr = tokens.consume ();
-		if ( ! scheme.hasCommand (repr) ) {
-			String msg = String.format (NOT_VALID, repr);
-			throw new MissingCommandException (msg);
-		}
+		if ( ! scheme.hasCommand (repr) ) { throw new CommandMismatchException (repr); }
 
 		Command command = scheme.getCommand(repr);
 		parsed.setCommand (command);
+	}
+
+	public boolean cannotFindPossibleCandidate () {
+		return tokens.atEnd () || tokens.typeOfNext () != NONE;
 	}
 
 }
