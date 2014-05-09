@@ -128,8 +128,11 @@ reuse these afterwards when looking up values, or checking for its presence. Thi
 minimizes the risk of mistyping the representation of the option.
 
 ```java
+import static org.tutske.cmdargs.Option.Requirement.*;
+import org.tutske.cmdargs.*;
+
 public class Options {
-	public static final ValueOption<String> msg = new StringOption ("message", "m", true);
+	public static final ValueOption<String> msg = new StringOption ("message", "m", RequireValue);
 	public static final ValueOption<Boolean> print = new BooleanOption ("print", "p");
 	public static final Option printAll = new BasicOption ("print all", "P");
 
@@ -151,13 +154,21 @@ can print a usefull message to `System.out` when something goes wrong. Other
 `OutputStream`s can be given to the method call.
 
 ```java
-public static void main (String [] args) {
-	Parser parser = ParserFactory.newInstance (Options.scheme);
+public class Main {
+	private ParsedCommand parsed;
 
-	try { ParsedCommand parsed = parser.parse (args); }
-	catch (CommandLineException exception) { parser.printError (); }
+	private Main (ParsedCommand parsed) {
+		this.parsed = parsed;
+	}
 
-	new Main (parsed).run ();
+	public static void main (String [] args) {
+		Parser parser = ParserFactory.newInstance (Options.scheme);
+
+		try { new Main (parser.parse (args)).run (); }
+		catch (CommandLineException exception) { parser.printError (); }
+	}
+
+	...
 }
 ```
 
@@ -251,10 +262,6 @@ public interface CommandSchemeBuilder {
 	public CommandScheme buildScheme ();
 	public Command buildCommand (String representation);
 
-	public CommandSchemeBuilder add (Option option);
-	public CommandSchemeBuilder add (Argument<?> argument);
-	public CommandSchemeBuilder add (Command command);
-
 	public CommandSchemeBuilder addOption (Option option);
 	public CommandSchemeBuilder addArgument (Argument<?> argument);
 	public CommandSchemeBuilder addCommand (Command command);
@@ -267,13 +274,17 @@ An Interface describing a valid option on the commandline.
 
 ```java
 public interface Option {
+	public static enum Requirement {
+		RequireNone, RequirePresence, RequireValue;
+	}
+
 	public String getRepresentation ();
 	public String getDescription ();
 	public boolean hasShortRepresentation ();
 	public String getShortRepresentation ();
 
 	public boolean matches (String representation);
-	public boolean isRequired ();
+	public boolean hasRequirement (Requirement requirement);
 }
 ```
 
@@ -295,22 +306,25 @@ object of type `T`.
 public interface Validator<T> {
 	public boolean isValid (String value);
 	public T parse (String value);
+	public boolean hasDefault ();
+	public T defaultValue ();
 }
 ```
 
 A couple of implementations are provided. `BasicOption` implements only the `Option`
-interface. `BooleanOption`. `DecimalValueOption`, `NumberValueOption`, `PathValueOption`
-and `StringValueOption` implement the `ValueOption` interface.
+interface. `BooleanOption`. `DecimalOption`, `NumberOption`, `PathOption`
+and `StringOption` implement the `ValueOption` interface.
 
 They all have constructors with a long representation and a constructor with both a long
-and short representation. You can provide an extra boolean indicating whether the option
-is required or not. By default options are not required.
+and short representation. You can provide an extra `Requirement` argument indicating
+whether the option is required or needs a value. By default options are not required, this
+is equivalent to passing `RequireNone`. `RequireValue` also implies `RequirePresence`.
 
 ```java
 Option basic = new BasicOption ("basic option");
-ValueOption<Boolean> bool = new BooleanOption ("required boolean", true);
+ValueOption<Boolean> bool = new BooleanOption ("required boolean", RequirePresence);
 ValueOption<Long> long = new NumberValueOption ("number", "n");
-ValueOption<String> string = new StringValueOption ("required string", "s", true);
+ValueOption<String> string = new StringValueOption ("required string", "s", RequireValue);
 ```
 
 Options should equal each other if they have the same long representation. If the long
