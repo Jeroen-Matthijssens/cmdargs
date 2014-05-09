@@ -1,7 +1,9 @@
 package priv.tutske.cmdargs;
 
+import org.tutske.cmdargs.*;
 
-public class BareArgument {
+
+public abstract class BareArgument {
 
 	private boolean required;
 	private String representation;
@@ -21,5 +23,9 @@ public class BareArgument {
 	public int getPosition () { return position; }
 	public boolean isRequired () { return required; }
 	public boolean matches (String repr) { return representation.equals (repr); }
+
+	public int compareTo (Argument<?> other) {
+		return getPosition () - other.getPosition ();
+	}
 
 }
