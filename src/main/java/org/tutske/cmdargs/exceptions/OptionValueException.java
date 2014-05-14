@@ -6,7 +6,8 @@ import org.tutske.cmdargs.*;
 public class OptionValueException extends CommandLineException {
 
 	private static final long serialVersionUID = 1L;
-	private static final String tpl = "Error: value for `%s` for option `%s is not valid!";
+	private static final String tpl = "Error: value `%s` for option `%s` is not valid!";
+	private static final String missing = "Error: missing value for `%s`!";
 
 	public OptionValueException () { super (); }
 	public OptionValueException (String msg) { super (msg); }
@@ -18,7 +19,9 @@ public class OptionValueException extends CommandLineException {
 	}
 
 	private static String constructMessage (Option option, String value) {
-		return String.format (tpl, value, option.getRepresentation ());
+		String repr = option.getRepresentation ();
+		if ( value == null ) { return String.format (missing, repr); }
+		else { return String.format (tpl, value, repr); }
 	}
 
 }
