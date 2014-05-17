@@ -20,8 +20,12 @@ public abstract class BareOption {
 		this (longRepr, Requirement.RequireNone);
 	}
 
-	public BareOption (String longRepr, Requirement requirement){
+	public BareOption (String longRepr, Requirement requirement) {
 		this (longRepr, null, requirement);
+	}
+
+	public BareOption (String longRepr, Set<Requirement> requirements) {
+		this (longRepr, null, requirements);
 	}
 
 	public BareOption (String longRepr, String shortRepr) {
@@ -29,6 +33,10 @@ public abstract class BareOption {
 	}
 
 	public BareOption (String longRepr, String shortRepr, Requirement requirement) {
+		this (longRepr, shortRepr, EnumSet.of (requirement));
+	}
+
+	public BareOption (String longRepr, String shortRepr, Set<Requirement> requirements) {
 		longRepr = new ReprNormalizer (longRepr).getLong ();
 
 		ReprNormalizer normalizer = new ReprNormalizer (shortRepr);
@@ -36,7 +44,7 @@ public abstract class BareOption {
 
 		this.longRepr = longRepr;
 		this.shortRepr = normalizer.getShort ();
-		this.requirements = EnumSet.of (requirement);
+		this.requirements = requirements;
 	}
 
 	/* partial implementation for options */

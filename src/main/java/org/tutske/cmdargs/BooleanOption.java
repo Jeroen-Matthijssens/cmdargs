@@ -1,5 +1,7 @@
 package org.tutske.cmdargs;
 
+import java.util.Set;
+
 import priv.tutske.cmdargs.*;
 
 
@@ -15,12 +17,20 @@ public class BooleanOption extends BareOption implements ValueOption<Boolean> {
 		super (longRepr, requirement);
 	}
 
+	public BooleanOption (String longRepr, Set<Requirement> requirements) {
+		super (longRepr, requirements);
+	}
+
 	public BooleanOption (String longRepr, String shortRepr) {
 		super (longRepr, shortRepr);
 	}
 
 	public BooleanOption (String longRepr, String shortRepr, Requirement requirement) {
 		super (longRepr, shortRepr, requirement);
+	}
+
+	public BooleanOption (String longRepr, String shortRepr, Set<Requirement> requirements) {
+		super (longRepr, shortRepr, requirements);
 	}
 
 	/* implement remaining parts of the Option interface */
