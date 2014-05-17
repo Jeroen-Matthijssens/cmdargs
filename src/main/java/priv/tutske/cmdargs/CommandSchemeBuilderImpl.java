@@ -28,7 +28,7 @@ public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 	public CommandSchemeBuilder addOption (Option option) {
 		// If multiple options with the same representation are added more than once there
 		// is a problem. Abuse the fact that equals is based on the long representation.
-		if ( options.indexOf (option) > -1 ) {
+		if ( options.contains (option) ) {
 			String msg = String.format (EXISTS, option.toString ());
 			throw new IllegalArgumentException (msg);
 		}
