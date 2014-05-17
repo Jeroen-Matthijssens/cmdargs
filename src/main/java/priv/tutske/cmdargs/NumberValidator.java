@@ -5,6 +5,7 @@ import org.tutske.cmdargs.Validator;
 
 public class NumberValidator implements Validator<Long> {
 
+	private static final String NUMBER_SEQUENCE = "\\d{1,19}";
 	private static Validator<Long> INSTANCE = new NumberValidator ();
 
 	public static Validator<Long> newInstance () {
@@ -16,7 +17,7 @@ public class NumberValidator implements Validator<Long> {
 
 	@Override
 	public boolean isValid (String value) {
-		return value.matches ("\\d{1,19}");
+		return value.matches (NUMBER_SEQUENCE);
 	}
 
 	@Override

@@ -2,8 +2,12 @@ package priv.tutske.cmdargs;
 
 public class ReprNormalizer {
 
+	private static final String BOTH = "Connot contain spaces and dashes: `%s`";
+	private static final String SINGLE_DASH = "Connat start with a single dash: `%s`";
+	private static final String TO_SHORT = "Must be longer than 1 character: `%s`";
+
 	private String [] reprs;
-	
+
 	public ReprNormalizer (String ... representations) {
 		this.reprs = representations;
 	}
@@ -43,17 +47,17 @@ public class ReprNormalizer {
 		if ( repr.startsWith ("--") ) { return repr.substring (2); }
 		return repr;
 	}
-	
+
 	private void checkForErrors (String repr) {
 		if ( isShort () ) { return; }
 		if ( repr.contains("\\s") && repr.contains ("-") ) {
-			throw new RuntimeException ("can not contain spaces and whitespace: `" + repr + "`");
+			throw new RuntimeException (String.format (BOTH, repr));
 		}
 		if ( repr.startsWith ("-") && ! repr.startsWith ("--") ) {
-			throw new RuntimeException ("can not start with a single dash `" + repr + "`");
+			throw new RuntimeException (String.format (SINGLE_DASH, repr));
 		}
 		if ( repr.length () < 2 ) {
-			throw new RuntimeException ("Must be longer than 1 character `" + repr + "`");
+			throw new RuntimeException (String.format (TO_SHORT, repr));
 		}
 	}
 
