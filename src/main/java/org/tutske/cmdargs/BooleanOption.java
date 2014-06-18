@@ -52,7 +52,7 @@ public class BooleanOption extends BareOption implements ValueOption<Boolean> {
 		longRepr = longRepr.trim ().toLowerCase ();
 		if ( longRepr.startsWith ("--not-") || longRepr.startsWith ("--no-") ) {
 			return new BooleanValidator (BooleanValidator.Type.Reversed);
-		} else { 
+		} else {
 			return new BooleanValidator ();
 		}
 	}

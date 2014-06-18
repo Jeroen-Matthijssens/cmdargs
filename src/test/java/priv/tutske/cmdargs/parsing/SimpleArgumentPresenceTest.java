@@ -37,7 +37,7 @@ public class SimpleArgumentPresenceTest {
 		return Arrays.asList (new Object [] [] {
 			{"TheValue second", "first", "TheValue"}
 			, {"first TheValue", "second", "TheValue"}
-			
+
 			, {"TheValue second third", "first", "TheValue"}
 			, {"first TheValue third", "second", "TheValue"}
 

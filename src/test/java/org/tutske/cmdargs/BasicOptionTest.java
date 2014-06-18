@@ -65,13 +65,13 @@ public class BasicOptionTest {
 		Option option = new BasicOption ("long-option", "l");
 		assertThat (option.matches ("l"), is (true));
 	}
-	
+
 	@Test
 	public void it_should_not_match_with_wrong_short_option () {
 		Option option = new BasicOption ("long-option", "l");
 		assertThat (option.matches ("t"), is (false));
 	}
-	
+
 	@Test
 	public void it_should_not_match_if_there_is_no_short_option () {
 		Option option = new BasicOption ("long-option");
@@ -112,14 +112,14 @@ public class BasicOptionTest {
 
 		assertThat (first.equals (second), is (true));
 	}
-	
+
 	@Test
 	public void it_should_not_equal_when_long_representations_are_different () {
 		Option first = new BasicOption ("first option");
 		Option second = new BasicOption ("second option", "s");
-		
+
 		assertThat (first.equals (second), is (false));
 	}
-	
+
 
 }

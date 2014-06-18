@@ -40,7 +40,7 @@ public class SubCommandParserTest {
 			, {"--enabled init", "init"}
 			, {"-p list show", "show"}
 			, {"-p create list pop", "list"}
-			
+
 			, {"-h show --human-readable", "show"}
 
 			, {"--enabled list --human-readable create", "list"}

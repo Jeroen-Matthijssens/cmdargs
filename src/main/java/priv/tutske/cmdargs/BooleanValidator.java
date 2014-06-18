@@ -27,7 +27,7 @@ public class BooleanValidator implements Validator<Boolean> {
 
 	@Override
 	public Boolean parse (String value) {
-		if ( type == Type.Normal ) {return parseString (value); } 
+		if ( type == Type.Normal ) {return parseString (value); }
 		else { return ! parseString (value); }
 	}
 
