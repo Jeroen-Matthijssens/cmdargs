@@ -1,5 +1,6 @@
 package priv.tutske.cmdargs;
 
+
 public class ArgsTokens {
 
 	public static enum TokenType {

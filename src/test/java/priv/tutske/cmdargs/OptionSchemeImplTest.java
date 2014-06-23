@@ -4,19 +4,13 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.MissingResourceException;
+import java.util.*;
 
-import org.junit.Test;
-import org.junit.Before;
-import org.tutske.cmdargs.BasicOption;
-import org.tutske.cmdargs.BooleanOption;
-import org.tutske.cmdargs.Option;
-import org.tutske.cmdargs.CommandScheme;
+import org.junit.*;
+import org.tutske.cmdargs.*;
 
 import org.tutske.cmdargs.StringOption;
-import priv.tutske.cmdargs.CommandSchemeImpl;
+
 
 public class OptionSchemeImplTest {
 

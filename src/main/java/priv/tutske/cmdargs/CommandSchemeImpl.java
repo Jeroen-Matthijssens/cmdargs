@@ -5,6 +5,7 @@ import java.util.*;
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.Option.Requirement;
 
+
 public class CommandSchemeImpl implements CommandScheme {
 
 	private List<Option> options;

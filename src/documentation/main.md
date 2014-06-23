@@ -74,7 +74,7 @@ first non option argument.
 ### Value Lists
 
 If an option can have a value, it can have multiple values. There are two ways to give
-mulitple values. The values can be given one at a time by repeating the option and then
+multiple values. The values can be given one at a time by repeating the option and then
 the next value in the list. This works with both long and short options.
 
 ```bash
@@ -83,7 +83,7 @@ $ command --long-option=first --long-option=second
 ```
 
 An other way is to specify the values in one go, this only works for long options. The
-values are seperated by a comma. No spaces are allowed in this list.
+values are separated by a comma. No spaces are allowed in this list.
 
 ```bash
 $ command --long-option=first,second,third
@@ -150,7 +150,7 @@ public class Options {
 ```
 
 A `RuntimeException` will be thrown if the parsing of the arguments has failed. The parser
-can print a usefull message to `System.out` when something goes wrong. Other
+can print a useful message to `System.out` when something goes wrong. Other
 `OutputStream`s can be given to the method call.
 
 ```java
@@ -215,7 +215,7 @@ Hello
 World
 ```
 
-The corisponding input with short options gives the same result
+The corresponding input with short options gives the same result
 
 ```bash
 $ java -jar command.jar -m 'Hello World!' -p
@@ -246,7 +246,7 @@ Error: missing value for `--message`!
 Adding functionality to the option and what they can accept is as simple as implementing
 the right interfaces. There is also a `CommandScheme` interface in case you do not wish to
 go through the builders. There are only four main once `Option`, `ValueOption<T>`,
-`Argument<T>` and `Commad`.
+`Argument<T>` and `Command`.
 
 There should generally not be any need to implement the `Parser`, `CommandScheme` or
 `ParsedCommand`, but this too is possible.
@@ -330,7 +330,7 @@ ValueOption<String> string = new StringValueOption ("required string", "s", Requ
 Options should equal each other if they have the same long representation. If the long
 representation is the same, the short representations should also be the same. Long
 representations can be written either with spaces or with dashes. Two leading dashes are
-also stipped.
+also stripped.
 
 ```java
 Option spaces = new BasicOption ("long option");
@@ -348,7 +348,7 @@ public interface Argument<T> {
 	public String getRepresentation ();
 	public int getPosition ();
 	public boolean isRequired ();
-	public boolean matches (String represenation);
+	public boolean matches (String representation);
 	public Validator<T> getValidator ();
 }
 ```
@@ -410,7 +410,7 @@ directly.
 
 ```java
 assert (parsed.hasOption (longOpt));
-PaserdCommand subparsed = parser.getParsedCommad ();
+ParsedCommand subparsed = parser.getParsedCommand ();
 assert (subparsed.hasOption (otherOpt));
 ```
 
@@ -425,7 +425,7 @@ This class is used to build up a scheme that is used to validate commandline arg
 against. It should also provide a nice `toString ()` method, to output a useful
 description of the options that are allowed, and what they do.
 
-When a subcommand is used, the paser should handle two schemes, the one used for the
+When a subcommand is used, the parser should handle two schemes, the one used for the
 global command, and the scheme for the subcommand. The structure for both is the same.
 
 ```java
@@ -470,7 +470,7 @@ public class Options {
 	public static final Option second = new BasicOption ("second", "s");
 	public static final Option third = new BasicOption ("third", "t");
 
-    public static final CommandScheme scheme = Options.createScheme ();
+	public static final CommandScheme scheme = Options.createScheme ();
 
 	private static CommandScheme createScheme () {
 		return CommandSchemeBuilderFactory.newInstance ()

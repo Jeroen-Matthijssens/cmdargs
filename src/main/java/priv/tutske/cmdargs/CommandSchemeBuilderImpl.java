@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.tutske.cmdargs.*;
 
+
 public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 
 	private static final String NOT_BOTH = "Can not have both commands and arguments";

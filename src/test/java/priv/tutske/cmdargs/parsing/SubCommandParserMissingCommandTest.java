@@ -4,19 +4,16 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.hamcrest.Matchers.*;
 
-import java.util.Collection;
-import java.util.Arrays;
+import java.util.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;
 
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
-import priv.tutske.cmdargs.ParserImpl;
-import priv.tutske.cmdargs.CommandImpl;
+import priv.tutske.cmdargs.*;
 import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
 
 

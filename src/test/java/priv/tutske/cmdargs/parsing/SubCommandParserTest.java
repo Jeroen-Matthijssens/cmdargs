@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Collection;
 import java.util.Arrays;
 
-import org.junit.Before;
+import org.junit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;

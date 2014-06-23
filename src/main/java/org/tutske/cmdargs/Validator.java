@@ -1,5 +1,6 @@
 package org.tutske.cmdargs;
 
+
 public interface Validator<T> {
 
 	public boolean isValid (String value);

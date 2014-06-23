@@ -10,7 +10,7 @@ import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
 
 public class SchemeBuilderComplex {
 
-	private Option verbase = new BooleanOption ("verbose", "v");
+	private Option verbose = new BooleanOption ("verbose", "v");
 	private Option help = new BasicOption ("help", "h");
 
 	public CommandScheme build () {
@@ -19,7 +19,7 @@ public class SchemeBuilderComplex {
 		builder.addOption (new BooleanOption ("enabled"));
 		builder.addOption (new StringOption ("path", "p"));
 		builder.addOption (new StringOption ("encoding", "E"));
-		builder.addOption (verbase);
+		builder.addOption (verbose);
 		builder.addOption (help);
 		builder.addCommand (buildInitCommand ());
 		builder.addCommand (buildConfigCommand ());
@@ -35,7 +35,7 @@ public class SchemeBuilderComplex {
 		CommandSchemeBuilderImpl builder = new CommandSchemeBuilderImpl ();
 
 		builder.addOption (new StringOption ("repository path", "p"));
-		builder.addOption (verbase);
+		builder.addOption (verbose);
 		builder.addOption (help);
 		CommandScheme initScheme = builder.buildScheme ();
 		Command init = new CommandImpl ("init", initScheme);
@@ -110,7 +110,7 @@ public class SchemeBuilderComplex {
 
 		builder.reset ();
 
-		builder.addOption (verbase);
+		builder.addOption (verbose);
 		builder.addOption (help);
 		builder.addCommand (buildCreateCommand ());
 		builder.addCommand (buildDeleteCommand ());
@@ -129,7 +129,7 @@ public class SchemeBuilderComplex {
 		builder.addOption (new BooleanOption ("human readable", "H"));
 		builder.addOption (new BasicOption ("paginated"));
 		builder.addOption (new NumberOption ("page size"));
-		builder.addOption (verbase);
+		builder.addOption (verbose);
 		builder.addOption (help);
 		CommandScheme showScheme = builder.buildScheme ();
 		Command show = new CommandImpl ("show", showScheme);
@@ -145,7 +145,7 @@ public class SchemeBuilderComplex {
 		builder.addOption (new StringOption ("template", "p"));
 		builder.addOption (new StringOption ("layout", "l"));
 		builder.addOption (new BooleanOption ("interactive", "i"));
-		builder.addOption (verbase);
+		builder.addOption (verbose);
 		builder.addOption (help);
 		CommandScheme createScheme = builder.buildScheme ();
 		Command create = new CommandImpl ("create", createScheme);
@@ -158,7 +158,7 @@ public class SchemeBuilderComplex {
 
 		builder.addOption (new BasicOption ("force", "f"));
 		builder.addOption (new BooleanOption ("interactive", "i"));
-		builder.addOption (verbase);
+		builder.addOption (verbose);
 		builder.addOption (help);
 		CommandScheme deleteScheme = builder.buildScheme ();
 		Command delete = new CommandImpl ("delete", deleteScheme);

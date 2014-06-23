@@ -1,5 +1,6 @@
 package org.tutske.cmdargs.exceptions;
 
+
 public class UnknownOptionException extends CommandLineException {
 
 	private static final long serialVersionUID = 1L;

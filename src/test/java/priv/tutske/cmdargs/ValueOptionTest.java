@@ -7,7 +7,6 @@ import static org.tutske.cmdargs.Option.Requirement.*;
 
 import org.junit.Test;
 import org.tutske.cmdargs.*;
-import org.tutske.cmdargs.Option.Requirement;
 import org.tutske.cmdargs.exceptions.CommandLineException;
 
 

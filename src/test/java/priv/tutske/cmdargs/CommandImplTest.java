@@ -6,9 +6,9 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.Before;
+
 import org.tutske.cmdargs.Command;
 
-import priv.tutske.cmdargs.CommandImpl;
 
 public class CommandImplTest {
 

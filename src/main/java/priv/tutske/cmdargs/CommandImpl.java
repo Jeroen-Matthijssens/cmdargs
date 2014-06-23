@@ -3,6 +3,7 @@ package priv.tutske.cmdargs;
 import org.tutske.cmdargs.CommandScheme;
 import org.tutske.cmdargs.Command;
 
+
 public class CommandImpl implements Command {
 
 	private static final String WRONG_REPR = "The command `%s` is not valid";

@@ -8,8 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
-import org.junit.Before;
+import org.junit.*;
 import org.tutske.cmdargs.*;
 
 

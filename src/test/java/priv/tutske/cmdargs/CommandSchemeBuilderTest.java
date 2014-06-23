@@ -11,7 +11,6 @@ import org.tutske.cmdargs.Option;
 import org.tutske.cmdargs.CommandScheme;
 
 import org.tutske.cmdargs.*;
-import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
 
 
 public class CommandSchemeBuilderTest {

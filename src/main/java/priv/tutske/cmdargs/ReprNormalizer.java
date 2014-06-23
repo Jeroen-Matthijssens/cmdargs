@@ -1,5 +1,6 @@
 package priv.tutske.cmdargs;
 
+
 public class ReprNormalizer {
 
 	private static final String BOTH = "Connot contain spaces and dashes: `%s`";

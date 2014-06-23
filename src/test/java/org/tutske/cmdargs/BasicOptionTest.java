@@ -7,6 +7,7 @@ import static org.tutske.cmdargs.Option.Requirement.*;
 
 import org.junit.Test;
 
+
 public class BasicOptionTest {
 
 	@Test (expected = RuntimeException.class)

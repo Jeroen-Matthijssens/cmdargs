@@ -8,6 +8,7 @@ import static org.tutske.cmdargs.Option.Requirement.*;
 import org.junit.Test;
 import org.tutske.cmdargs.exceptions.CommandLineException;
 
+
 public class BooleanOptionTest {
 
 	@Test (expected = RuntimeException.class)

@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.tutske.cmdargs.*;
 import org.tutske.cmdargs.exceptions.*;
 
+
 public class ParserTest {
 
 	private CommandSchemeBuilderImpl schemeBuilder;
