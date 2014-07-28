@@ -56,11 +56,18 @@ public class ParsedCommandImpl implements ParsedCommand {
 	}
 
 	@Override
+	public <T> T getOptionValue (ValueOption<T> option, T alternative) {
+		if ( ! options.contains (option) ) { return alternative; }
+		return getOptionValue (option);
+	}
+
+	@Override
 	public <T> List<T> getOptionValues (ValueOption<T> option) {
 		if ( ! optValues.containsKey (option) ) { return new ArrayList<T> (); }
 		List<? extends Object> values = optValues.get (option);
 		return (List<T>) values;
 	}
+
 
 	@Override
 	public boolean hasArgument (Argument<?> argument) {
@@ -90,6 +97,13 @@ public class ParsedCommandImpl implements ParsedCommand {
 
 	public void addOption (Option option) {
 		options.add (option);
+	}
+
+	public <T> void addDefaultedOption (ValueOption<T> option, T value) {
+		if ( ! optValues.containsKey (option) ) {
+			optValues.put (option, new ArrayList<Object> ());
+		}
+		optValues.get (option).add (value);
 	}
 
 	public void addArgument (Argument<?> argument, Object value) {

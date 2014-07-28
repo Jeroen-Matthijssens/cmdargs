@@ -11,6 +11,7 @@ public interface ParsedCommand {
 
 	public boolean hasOption (Option option);
 	public <T> T getOptionValue (ValueOption<T> option);
+	public <T> T getOptionValue (ValueOption<T> option, T alternative);
 	public <T> List<T> getOptionValues (ValueOption<T> option);
 
 	public boolean hasArgument (Argument<?> argument);

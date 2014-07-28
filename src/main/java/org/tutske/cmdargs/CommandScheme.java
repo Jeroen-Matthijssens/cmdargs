@@ -14,6 +14,8 @@ public interface CommandScheme {
 	public boolean hasOption (Option option);
 	public boolean hasOption (String representation);
 	public Option getOption (String representation);
+	public boolean hasDefault (ValueOption<?> option);
+	public <T> T getDefault (ValueOption<T> option);
 
 	public boolean hasCommand (Command command);
 	public boolean hasCommand (String command);
@@ -25,5 +27,6 @@ public interface CommandScheme {
 	public List<Argument<?>> getArguments ();
 
 	public Set<Option> getByRequirement (Requirement requirement);
+	public Set<Option> getDefaultedOptions ();
 
 }

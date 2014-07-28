@@ -2,7 +2,9 @@ package priv.tutske.cmdargs.parsing;
 
 import static org.tutske.cmdargs.Option.Requirement.*;
 
+import java.util.EnumSet;
 import org.tutske.cmdargs.*;
+import org.tutske.cmdargs.Option.Requirement;
 import priv.tutske.cmdargs.CommandSchemeBuilderImpl;
 
 
@@ -49,11 +51,13 @@ public class SchemeBuilderSimple {
 		builder.addOption (new BasicOption ("verbose", "v"));
 		builder.addOption (new BasicOption ("human readable", "H"));
 		builder.addOption (new BasicOption ("two words", "t"));
-		builder.addOption (new StringOption ("path", "p", RequireValue));
 		builder.addOption (new StringOption ("layout", "l"));
 		builder.addOption (new BooleanOption ("enabled"));
 		builder.addOption (new BooleanOption ("recursive"));
 		builder.addOption (new BasicOption ("help", "h"));
+		builder.addOption (new StringOption ("path", "p",
+			EnumSet.of (RequireValue, RequirePresence)
+		));
 
 		return builder.buildScheme ();
 	}

@@ -9,6 +9,7 @@ import org.tutske.cmdargs.Option.Requirement;
 public class CommandSchemeImpl implements CommandScheme {
 
 	private List<Option> options;
+	private Map<Option, Object> defaults;
 	private List<Command> commands;
 	private List<Argument<?>> arguments;
 
@@ -30,12 +31,30 @@ public class CommandSchemeImpl implements CommandScheme {
 		return new CommandSchemeImpl ().setOptions (options).setCommands (commands);
 	}
 
+	public static CommandScheme withCommands (List<Option> options
+		, Map<Option, Object> defaults, List<Command> commands
+	) {
+		return new CommandSchemeImpl ()
+			.setOptions (options)
+			.setDefaults (defaults)
+			.setCommands (commands);
+	}
+
 	public static CommandScheme withArguments (List<Argument<?>> arguments) {
 		return new CommandSchemeImpl ().setArguments (arguments);
 	}
 
 	public static CommandScheme withArguments (List<Option> options, List<Argument<?>> arguments) {
 		return new CommandSchemeImpl ().setOptions (options).setArguments (arguments);
+	}
+
+	public static CommandScheme withArguments (List<Option> options
+		, Map<Option, Object> defaults, List<Argument<?>> arguments
+	) {
+		return new CommandSchemeImpl ()
+			.setOptions (options)
+			.setDefaults (defaults)
+			.setArguments (arguments);
 	}
 
 	/* Constructors */
@@ -68,6 +87,11 @@ public class CommandSchemeImpl implements CommandScheme {
 	}
 
 	@Override
+	public boolean hasDefault (ValueOption<?> option) {
+		return defaults.keySet ().contains (option);
+	}
+
+	@Override
 	public Option getOption (String representation) {
 		if ( options == null ) { throw new RuntimeException (); }
 
@@ -77,6 +101,11 @@ public class CommandSchemeImpl implements CommandScheme {
 
 		String msg = "Option could not be found `" + representation + "`";
 		throw new MissingResourceException (msg, "Option", representation);
+	}
+
+	@Override
+	public <T> T getDefault (ValueOption<T> option) {
+		return (T) defaults.get (option);
 	}
 
 	@Override
@@ -141,6 +170,11 @@ public class CommandSchemeImpl implements CommandScheme {
 		return matching;
 	}
 
+	@Override
+	public Set<Option> getDefaultedOptions () {
+		return defaults.keySet ();
+	}
+
 	/* -- privates -- */
 
 	private CommandSchemeImpl setOptions (List<Option> options) {
@@ -155,6 +189,11 @@ public class CommandSchemeImpl implements CommandScheme {
 
 	private CommandSchemeImpl setCommands (List<Command> commands) {
 		this.commands = commands;
+		return this;
+	}
+
+	private CommandSchemeImpl setDefaults (Map<Option, Object> defaults) {
+		this.defaults = defaults;
 		return this;
 	}
 

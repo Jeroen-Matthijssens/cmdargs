@@ -41,7 +41,7 @@ public class ParsedCommandValidator {
 	}
 
 	private void throwOnAbsentValue (Option option) {
-		if ( ! parsed.hasOption (option) ) { throw new MissingOptionException (option); }
+		if ( ! parsed.hasOption (option) ) { return; }
 
 		if ( ! (option instanceof ValueOption) ) {
 			throw new RuntimeException (String.format (NOT_VALUE_OPTION,

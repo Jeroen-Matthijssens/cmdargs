@@ -3,11 +3,9 @@ package priv.tutske.cmdargs.parsing;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-import java.util.Collection;
-import java.util.Arrays;
+import java.util.*;
 
 import org.junit.*;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized;

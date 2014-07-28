@@ -1,7 +1,6 @@
 package priv.tutske.cmdargs;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.tutske.cmdargs.*;
 
@@ -13,6 +12,7 @@ public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 
 	List<Command> commands;
 	List<Option> options;
+	Map<Option, Object> defaults;
 	List<Argument<?>> arguments;
 
 	public CommandSchemeBuilderImpl () {
@@ -23,6 +23,7 @@ public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 		commands = new ArrayList<Command> ();
 		options = new ArrayList<Option> ();
 		arguments = new ArrayList<Argument<?>> ();
+		defaults = new HashMap<Option, Object> ();
 	}
 
 	@Override
@@ -34,6 +35,13 @@ public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 			throw new IllegalArgumentException (msg);
 		}
 		options.add (option);
+		return this;
+	}
+
+	@Override
+	public <T> CommandSchemeBuilder addOption (ValueOption<T> option, T value) {
+		addOption (option);
+		defaults.put (option, value);
 		return this;
 	}
 
@@ -54,9 +62,9 @@ public class CommandSchemeBuilderImpl implements CommandSchemeBuilder {
 	@Override
 	public CommandScheme buildScheme () {
 		if ( arguments.size () == 0 ) {
-			return CommandSchemeImpl.withCommands (options, commands);
+			return CommandSchemeImpl.withCommands (options, defaults, commands);
 		} else {
-			return CommandSchemeImpl.withArguments (options, arguments);
+			return CommandSchemeImpl.withArguments (options, defaults, arguments);
 		}
 	}
 

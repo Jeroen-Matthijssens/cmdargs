@@ -51,9 +51,57 @@ public class ParsedCommandImplTest {
 	@Test
 	public void it_should_find_its_command () {
 		Command command = new CommandImpl ("MAIN");
-		parsed.setCommand(command);;
+		parsed.setCommand (command);
 
 		assertThat (parsed.getCommand (), is (command));
+	}
+
+	@Test
+	public void it_should_find_the_default_values () {
+		ValueOption<String> option = new StringOption ("name", "n");
+		String standard = "standard value";
+		parsed.addDefaultedOption (option, standard);
+
+		assertThat (parsed.getOptionValue (option), is (standard));
+	}
+
+	@Test
+	public void it_should_say_option_is_not_present_if_it_is_a_default () {
+		ValueOption<String> option = new StringOption ("name", "n");
+		String standard = "standard value";
+		parsed.addDefaultedOption(option,standard);
+
+		assertThat (parsed.hasOption (option), is (false));
+	}
+
+	@Test
+	public void it_should_give_a_default_value_if_no_option_is_there () {
+		ValueOption<String> option = new StringOption ("name", "n");
+		String standard = "standard value";
+
+		assertThat (parsed.getOptionValue (option, standard), is (standard));
+	}
+
+	@Test
+	public void it_should_give_the_real_value_even_if_defaul_is_specified () {
+		ValueOption<String> option = new StringOption ("name", "n");
+		String standard = "standard value";
+		String real = "real value";
+
+		parsed.addOption (option, real);
+
+		assertThat (parsed.getOptionValue (option, standard), is (real));
+	}
+
+	@Test
+	public void it_should_pick_method_defaul_over_the_construction_default () {
+		ValueOption<String> option = new StringOption ("name", "n");
+		String method = "method value";
+		String construction = "construction value";
+
+		parsed.addDefaultedOption (option, construction);
+
+		assertThat (parsed.getOptionValue (option, method), is (method));
 	}
 
 }

@@ -56,6 +56,7 @@ public class ParserImpl implements Parser {
 
 	private void process () {
 		new ParserOptionExtractor (scheme, parsed, tokens).extract ();
+		registerDefaults ();
 
 		if ( scheme.hasCommands () ) {
 			new ParserCommandExtractor (scheme, parsed, tokens).extract ();
@@ -67,6 +68,14 @@ public class ParserImpl implements Parser {
 		}
 
 		new ParsedCommandValidator (parsed, scheme).validate ();
+	}
+
+	private void registerDefaults () {
+		for ( Option option : scheme.getDefaultedOptions () ) {
+			if ( parsed.hasOption (option) ) { continue; }
+			ValueOption<Object> opt = (ValueOption<Object>) option;
+			parsed.addDefaultedOption (opt, scheme.getDefault (opt));
+		}
 	}
 
 }
